@@ -2,26 +2,26 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.5.
 
-## Development server
+## Test it on your local machine
+- `npm install`
+- `npm run start`
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Test NFC feature on your smartphone
+- `npm run start:public` aka `ng serve  --host 0.0.0.0 --ssl` on your local machine:
+  - `--host 0.0.0.0`: same network (e.g. your local machine IP might be 192.168.1.2)
+  - `--ssl`: NFC works only through `https`
+  - NB: if your local machine is behind a firewall, you might have to change some configurations depending on your firewall/machine/...
+- Connect your smartphone to your local machine through USB
+  - grant permissions on the smartphone
+- Browse `https://192.168.1.2:4200` on your smartphone
+- Open chrome debug `chrome://inspect/#devices` on your local machine
+- Select `inspect` under the `https://192.168.1.2:4200` item in the list
 
-## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Useful links
+- [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API?retiredLocale=it)
+- [Remote debug Android devices](https://developer.chrome.com/docs/devtools/remote-debugging/)
+- [Get angular-cli to ng serve over HTTPS](https://stackoverflow.com/questions/39210467/get-angular-cli-to-ng-serve-over-https)
+- [How to allow access outside localhost](https://stackoverflow.com/questions/43492354/how-to-allow-access-outside-localhost)
+- [NFC examples](https://whatwebcando.today/nfc.html)
+- [NFC examples (Web.dev)](https://web.dev/nfc/#check-for-permission)

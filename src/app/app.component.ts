@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireDatabase, AngularFireList, SnapshotAction } from '@angular/fire/compat/database';
-import { catchError, distinctUntilChanged, map, Observable, of, tap } from 'rxjs';
+import { catchError, distinctUntilChanged, map, Observable, of, Subscription, takeUntil, tap } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Badge, BadgeForm, BadgeWithKey } from './models/badge.models';
 import { DatePipe } from '@angular/common';
@@ -14,27 +14,53 @@ import { NfcService } from './modules/shared/services/nfc.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'office-buddy';
+  // AUTH
   username: string | undefined;
-  badges$: Observable<BadgeWithKey[]> = of([]);
+
+  //BADGES
   badgesRef: AngularFireList<Badge> = this.db.list<Badge>('/badge', ref => ref.orderByChild('timestamp'));
-  isLoading = true;
+  badges$: Observable<BadgeWithKey[]> = of([]);
   newBadge: BadgeForm = {
     clock: 'in',
     timestamp: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm') ?? undefined
   };
 
+  // NFC
+  hasNfcCapability$ = this.nfcService.hasNfcCapability$;
+  nfcMessages$ = this.nfcService.messages$;
+  nfcPermissionState: PermissionState = 'denied';
+  nfcReadRunningState: 'started' | 'stopped' = 'stopped';
+  nfcWriteRunningState: 'started' | 'stopped' = 'stopped';
+  messages: Array<any> = [];
+
+  // UI
+  isLoading = true;
+
   constructor(public auth: AngularFireAuth,
               private db: AngularFireDatabase,
               private datePipe: DatePipe,
               private dialog: MatDialog,
-              private nfcService: NfcService,
+              public nfcService: NfcService,
   ) {
+
   }
 
   ngOnInit() {
 
-    this.nfcService.init();
+    void this.nfcService.init();
+
+    this.nfcService.readRunningState$.subscribe(state => {
+      this.nfcReadRunningState = state;
+    });
+    this.nfcService.writeRunningState$.subscribe(state => {
+      this.nfcWriteRunningState = state;
+    });
+    this.nfcService.permissionState$.subscribe(state => {
+      this.nfcPermissionState = state;
+    });
+    this.nfcMessages$.subscribe(message => {
+      this.doBadge(message.data);
+    });
 
     this.auth.user.subscribe(user => {
       this.username = user?.email || undefined;
@@ -47,9 +73,9 @@ export class AppComponent implements OnInit {
     this.badges$ = this.badgesRef.snapshotChanges().pipe(
       distinctUntilChanged(),
       map((changes: SnapshotAction<Badge>[]) =>
-        changes.map(c => ({ key: c.payload.key, ...c.payload.val() }))
+        changes.map((c: SnapshotAction<Badge>) => ({ key: c.payload.key, ...c.payload.val() } as BadgeWithKey))
       ),
-      tap(console.warn),
+      tap(console.debug),
       tap(_ => this.isLoading = false),
       map((array: BadgeWithKey[]) => array.reverse()),
       catchError((err) => {
@@ -105,5 +131,21 @@ ${ badge.clock.toUpperCase() }: ${ this.datePipe.transform(new Date(badge.timest
       dialogRef.close();
     });
 
+  }
+
+  startNfcScan() {
+    void this.nfcService.startRead();
+  }
+
+  stopNfcScan() {
+    void this.nfcService.stopRead();
+  }
+
+  startWriteNfc(clock: Badge['clock']) {
+    void this.nfcService.startWrite(clock);
+  }
+
+  stopWriteNfc() {
+    void this.nfcService.stopWrite();
   }
 }

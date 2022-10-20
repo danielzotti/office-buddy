@@ -4,32 +4,80 @@
 
   <div class="home" *ngIf="auth.user| async as user; else showNotAuthenticated">
 
+    <mat-card *ngIf="hasNfcCapability$ | async">
+      <mat-card-title>NFC badge</mat-card-title>
+      <mat-card-content>
+
+        <div>Running status: <strong>{{ nfcReadRunningState }}</strong></div>
+        <div>Permission status: <strong>{{ nfcPermissionState }}</strong></div>
+        <div class="nfc-badge-button">
+          <button mat-raised-button color="primary" (click)="startNfcScan()"
+                  *ngIf="nfcReadRunningState === 'stopped'&& nfcPermissionState !== 'denied'">
+            <span>Start</span>
+            <mat-icon>play_arrow</mat-icon>
+          </button>
+          <button mat-raised-button (click)="stopNfcScan()"
+                  *ngIf="nfcReadRunningState === 'started'">
+            <span>Stop</span>
+            <mat-icon>stop</mat-icon>
+          </button>
+        </div>
+
+        <strong>To use NFC:</strong>
+        <ul>
+          <li *ngIf="nfcPermissionState !== 'denied'">
+            Click the button to start NFC service
+          </li>
+          <li *ngIf="nfcPermissionState === 'denied'">
+            <strong>Grant permission manually in browser settings</strong> (you've blocked NFC permission when asked)
+          </li>
+          <li>
+            Activate the NFC feature in the smartphone settings
+          </li>
+          <li>
+            Touch the appropriate smart tag (Black = IN, Red = OUT)
+          </li>
+        </ul>
+
+        <hr>
+
+        <div><strong>Tag administration section</strong></div>
+
+        <div>
+          <button mat-flat-button (click)="startWriteNfc('in')">
+            <span>Write IN</span>&nbsp;<mat-icon>login</mat-icon>
+          </button>
+
+          <button mat-flat-button (click)="startWriteNfc('out')">
+            <span>Write OUT</span>&nbsp;<mat-icon>logout</mat-icon>
+          </button>
+
+          <button mat-flat-button color="warn" (click)="stopWriteNfc()" *ngIf="nfcWriteRunningState === 'started'">
+            <span>STOP</span>&nbsp;<mat-icon>stop</mat-icon>
+          </button>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
     <mat-card>
       <mat-card-title>New badge</mat-card-title>
       <mat-card-content>
-        <ob-badge-form [badge]="newBadge" (formSubmitted)="addBadgeItem($event)"></ob-badge-form>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card>
-      <mat-card-title>NFC Badge</mat-card-title>
-      <mat-card-content>
-        <p>To use NFC just activate the feature in the smartphone settings and touch the appropriate smart tag (Black =
-          IN, Red = OUT)</p>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card>
-      <mat-card-title>Manual Badge</mat-card-title>
-      <mat-card-content>
-        <div class="nfc-badge-buttons">
-          <button (click)="badgeIn()" class="nfc-badge-button" mat-fab color="primary">
+        <div class="new-badge-buttons">
+          <button (click)="badgeIn()" class="new-badge-button in" mat-fab color="primary">
             <mat-icon>login</mat-icon>
           </button>
-          <button (click)="badgeOut()" class="nfc-badge-button" mat-fab color="warn">
+          <button (click)="badgeOut()" class="new-badge-button out" mat-fab color="warn">
             <mat-icon>logout</mat-icon>
           </button>
         </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>Manual badge</mat-card-title>
+      <mat-card-content>
+        <ob-badge-form [badge]="newBadge" (formSubmitted)="addBadgeItem($event)"></ob-badge-form>
       </mat-card-content>
     </mat-card>
 

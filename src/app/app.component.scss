@@ -1,3 +1,5 @@
+@use "../scss/colors";
+
 :host {
   display: flex;
   flex-direction: column;
@@ -27,7 +29,12 @@
   text-align: center;
 }
 
-.nfc-badge-buttons {
+
+.nfc-badge-button {
+  margin-block: 20px;
+}
+
+.new-badge-buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -37,7 +44,7 @@
 $nfc-badge-button-size: 120px;
 $nfc-badge-button-icon-size: $nfc-badge-button-size * 0.75;
 
-.nfc-badge-button {
+.new-badge-button {
   width: $nfc-badge-button-size;
   height: $nfc-badge-button-size;
 
@@ -50,6 +57,14 @@ $nfc-badge-button-icon-size: $nfc-badge-button-size * 0.75;
     font-size: $nfc-badge-button-icon-size;
     width: $nfc-badge-button-icon-size;
     height: $nfc-badge-button-icon-size;
+  }
+
+  &.in {
+    background-color: colors.$green;
+  }
+
+  &.out {
+    background-color: colors.$red;
   }
 }
 
