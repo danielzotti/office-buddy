@@ -1,0 +1,67 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  inset: 0;
+}
+
+#app-toolbar {
+
+}
+
+#app-content {
+  flex-grow: 1;
+  padding: 20px;
+  overflow: auto;
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 600px;
+  margin-inline: auto;
+}
+
+.no-login {
+  text-align: center;
+}
+
+.nfc-badge-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 20px;
+}
+
+$nfc-badge-button-size: 120px;
+$nfc-badge-button-icon-size: $nfc-badge-button-size * 0.75;
+
+.nfc-badge-button {
+  width: $nfc-badge-button-size;
+  height: $nfc-badge-button-size;
+
+  .mat-fab.mat-button-wrapper {
+    width: $nfc-badge-button-icon-size;
+    height: $nfc-badge-button-icon-size;
+  }
+
+  .mat-icon {
+    font-size: $nfc-badge-button-icon-size;
+    width: $nfc-badge-button-icon-size;
+    height: $nfc-badge-button-icon-size;
+  }
+}
+
+.badge-list {
+  .mat-mini-fab {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+}
+
+.badge-list-item {
+  &:nth-of-type(2n) {
+    background-color: #efefef;
+  }
+}

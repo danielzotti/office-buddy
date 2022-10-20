@@ -1,0 +1,5 @@
+<button mat-raised-button [color]="color" *ngIf="auth.user | async as user; else showLogin" (click)="logout()">Logout
+</button>
+<ng-template #showLogin>
+  <button mat-raised-button [color]="color" (click)="login()">Login</button>
+</ng-template>

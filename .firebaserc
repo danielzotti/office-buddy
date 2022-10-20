@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "office-buddy-trieste": {
+      "hosting": {
+        "office-buddy": [
+          "office-buddy-trieste"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "office-buddy-trieste"
+  }
+}

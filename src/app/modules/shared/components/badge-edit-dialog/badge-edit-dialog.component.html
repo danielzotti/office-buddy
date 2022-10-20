@@ -1,0 +1,5 @@
+<h1 mat-dialog-title>Edit Badge</h1>
+<div mat-dialog-content>
+  <ob-badge-form [badge]="badgeForm"
+                 (formSubmitted)="formSubmitted.emit($event)"></ob-badge-form>
+</div>

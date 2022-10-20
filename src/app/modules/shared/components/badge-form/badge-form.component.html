@@ -1,0 +1,24 @@
+<form [formGroup]="badgeForm" (submit)="submit()">
+  <div>
+    <mat-form-field appearance="outline">
+      <mat-label>username</mat-label>
+      <input matInput formControlName="username" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>clock</mat-label>
+      <mat-select formControlName="clock" required>
+        <mat-option *ngFor="let clock of ['in','out']" [value]="clock">
+          {{clock}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>timestamp</mat-label>
+      <input matInput type="datetime-local" formControlName="timestamp" required>
+    </mat-form-field>
+  </div>
+
+  <button mat-raised-button color="primary" type="submit">Save</button>
+</form>

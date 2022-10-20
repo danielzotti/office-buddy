@@ -1,0 +1,74 @@
+<ob-toolbar id="app-toolbar"></ob-toolbar>
+
+<div id="app-content">
+
+  <div class="home" *ngIf="auth.user| async as user; else showNotAuthenticated">
+
+    <mat-card>
+      <mat-card-title>New badge</mat-card-title>
+      <mat-card-content>
+        <ob-badge-form [badge]="newBadge" (formSubmitted)="addBadgeItem($event)"></ob-badge-form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>NFC Badge</mat-card-title>
+      <mat-card-content>
+        <p>To use NFC just activate the feature in the smartphone settings and touch the appropriate smart tag (Black =
+          IN, Red = OUT)</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>Manual Badge</mat-card-title>
+      <mat-card-content>
+        <div class="nfc-badge-buttons">
+          <button (click)="badgeIn()" class="nfc-badge-button" mat-fab color="primary">
+            <mat-icon>login</mat-icon>
+          </button>
+          <button (click)="badgeOut()" class="nfc-badge-button" mat-fab color="warn">
+            <mat-icon>logout</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <ob-spinner *ngIf="isLoading"></ob-spinner>
+
+    <mat-card *ngIf="(badges$ | async) as badges">
+      <mat-card-title>Badge list</mat-card-title>
+      <mat-card-content>
+        <mat-list class="badge-list">
+          <mat-list-item class="badge-list-item" *ngFor="let badge of badges">
+
+            <button mat-mini-fab color="warn" (click)="deleteBadgeItem(badge)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-mini-fab color="primary" (click)="openUpdateBadgeModal(badge)">
+              <mat-icon>edit</mat-icon>
+            </button>
+
+            <mat-icon *ngIf="badge.clock === 'in'" color="primary">login</mat-icon>
+            <mat-icon *ngIf="badge.clock === 'out'" color="warn">logout</mat-icon>
+
+            <span>{{ badge.username }}</span>&nbsp;
+            <strong>{{ badge.clock | uppercase }}</strong>&nbsp;
+            <span *ngIf="badge.timestamp">at&nbsp;<em>{{ badge.timestamp | date:'dd/MM/yyyy HH:mm'}}</em></span>
+
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+  <ng-template #showNotAuthenticated>
+    <div class="no-login">
+      <p>You have to be authenticated to use this app.
+        <ob-login-with-google color="primary"></ob-login-with-google>
+      </p>
+    </div>
+  </ng-template>
+
+</div>
+
