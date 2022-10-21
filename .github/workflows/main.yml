@@ -16,16 +16,15 @@ jobs:
     - name: Use Node.js 14.x
       uses: actions/setup-node@v1
       with:
-        node-version: '14.x'
+        node-version: 14
     - name: Build
       run: |
          npm install -g @angular/cli
          npm install
          ng build --base-href="/office-buddy/"
     - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@releases/v2
-      env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        BASE_BRANCH: master
-        BRANCH: gh-pages
-        FOLDER: dist
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.ACCESS_TOKEN }}
+        publish_dir: dist
+        enable_jekyll: true
