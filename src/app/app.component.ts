@@ -51,6 +51,9 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
 
+    // Check if app has an update
+    this.appCheckUpdateService.init();
+
     void this.nfcService.init();
 
     this.nfcService.readRunningState$.subscribe(state => {

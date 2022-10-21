@@ -1,25 +1,24 @@
-import { ApplicationRef, Injectable } from '@angular/core';
-import { SwUpdate } from '@angular/service-worker';
-import { concat, interval } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
+import { filter } from 'rxjs';
 
 @Injectable()
 export class AppCheckUpdateService {
 
-  constructor(appRef: ApplicationRef, updates: SwUpdate) {
-    // Allow the app to stabilize first, before starting
-    // polling for updates with `interval()`.
-    const appIsStable$ = appRef.isStable.pipe(first(isStable => isStable));
-    const everySixHours$ = interval(6 * 60 * 60 * 1000);
-    const everySixHoursOnceAppIsStable$ = concat(appIsStable$, everySixHours$);
 
-    everySixHoursOnceAppIsStable$.subscribe(async () => {
-      try {
-        const updateFound = await updates.checkForUpdate();
-        console.log(updateFound ? 'A new version is available.' : 'Already on the latest version.');
-      } catch(err) {
-        console.error('Failed to check for updates:', err);
-      }
-    });
+  constructor(private swUpdate: SwUpdate) {
+
+  }
+
+  init() {
+    this.swUpdate.versionUpdates
+      .pipe(filter((evt): evt is VersionReadyEvent => evt.type === 'VERSION_READY'))
+      .subscribe(evt => {
+        console.log(evt);
+        if(prompt('A new version is available, do you want to update?')) {
+          // Reload the page to update to the latest version.
+          document.location.reload();
+        }
+      });
   }
 }
