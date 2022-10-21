@@ -21,9 +21,13 @@ export class BadgeFormComponent implements OnInit, OnChanges {
   formSubmitted = new EventEmitter<Badge>();
 
   badgeForm: FormGroup = new FormGroup({
-    username: new FormControl(this.badge?.username),
     clock: new FormControl(this.badge?.clock),
     timestamp: new FormControl(this.badge?.timestamp),
+    user: new FormGroup({
+      uid: new FormControl(this.badge?.user?.uid),
+      email: new FormControl(this.badge?.user?.email),
+      displayName: new FormControl(this.badge?.user?.displayName),
+    })
   });
 
   constructor(private dateService: DateService) {

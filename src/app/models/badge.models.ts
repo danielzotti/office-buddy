@@ -1,7 +1,9 @@
-export interface Badge {
+import { User } from './user.models';
+
+export type Badge = {
   clock: 'in' | 'out';
   timestamp: string;
-  username: string;
+  user: User;
 }
 
 export interface BadgeWithKey extends Badge {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { AngularFireDatabase, AngularFireList, SnapshotAction } from '@angular/fire/compat/database';
 import { catchError, distinctUntilChanged, map, Observable, of, Subscription, takeUntil, tap } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -7,6 +7,7 @@ import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { BadgeEditDialogComponent } from './modules/shared/components/badge-edit-dialog/badge-edit-dialog.component';
 import { NfcService } from './modules/shared/services/nfc.service';
+import { User } from './models/user.models';
 
 @Component({
   selector: 'ob-root',
@@ -15,8 +16,7 @@ import { NfcService } from './modules/shared/services/nfc.service';
 })
 export class AppComponent implements OnInit {
   // AUTH
-  username: string | undefined;
-
+  user: User | undefined;
   isUserAuthorized = false;
 
   //BADGES
@@ -43,6 +43,7 @@ export class AppComponent implements OnInit {
               private datePipe: DatePipe,
               private dialog: MatDialog,
               public nfcService: NfcService,
+              private renderer: Renderer2
   ) {
 
   }
@@ -66,10 +67,19 @@ export class AppComponent implements OnInit {
 
     this.auth.user.subscribe(user => {
       this.isUserAuthorized = true;
-      this.username = user?.email || undefined;
+      console.log({ user });
+      if(!user?.uid) {
+        return;
+      }
+      this.user = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName
+      };
+
       this.newBadge = {
         ...this.newBadge,
-        username: this.username
+        user: this.user
       };
     });
 
@@ -96,7 +106,7 @@ export class AppComponent implements OnInit {
   }
 
   deleteBadgeItem(badge: BadgeWithKey) {
-    const canDelete = confirm(`Are you sure to delete badge by ${ badge.username }
+    const canDelete = confirm(`Are you sure to delete badge by ${ badge.user?.email }
 ${ badge.clock.toUpperCase() }: ${ this.datePipe.transform(new Date(badge.timestamp), 'dd/MM/yyyy HH:mm') }?`);
 
     if(canDelete && badge.key) {
@@ -113,12 +123,12 @@ ${ badge.clock.toUpperCase() }: ${ this.datePipe.transform(new Date(badge.timest
   }
 
   doBadge(clock: Badge['clock']) {
-    if(!this.username) {
-      console.log(`No username to badge for badge ${ clock }`);
+    if(!this.user) {
+      console.log(`No usern to badge for badge ${ clock }`);
       return;
     }
     const badge: Badge = {
-      username: this.username,
+      user: this.user,
       clock,
       timestamp: new Date().toISOString()
     };

@@ -75,7 +75,7 @@
     </mat-card>
 
     <mat-card>
-      <mat-card-title>Manual badge</mat-card-title>
+      <mat-card-title>Manual badge (testing purpose)</mat-card-title>
       <mat-card-content>
         <ob-badge-form [badge]="newBadge" (formSubmitted)="addBadgeItem($event)"></ob-badge-form>
       </mat-card-content>
@@ -99,7 +99,7 @@
               <span *ngIf="badge.timestamp"><strong>{{ badge.timestamp | date:'dd/MM/yyyy HH:mm'}}</strong></span>
             </span>
 
-            <span>{{ badge.username }}</span>
+            <span>{{ badge.user.displayName || badge.user.email || badge.user.uid || 'No user info' }}</span>
 
             <span>
               <button mat-icon-button color="warn" (click)="deleteBadgeItem(badge)">
