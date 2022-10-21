@@ -14,6 +14,7 @@ import { SharedModule } from './modules/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { NfcService } from './modules/shared/services/nfc.service';
+import { AppCheckUpdateService } from './modules/shared/services/app-check-update.service';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { NfcService } from './modules/shared/services/nfc.service';
     ReactiveFormsModule,
     // SERVICE WORKER
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
+      // enabled: environment.production,
+      enabled: true,
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
@@ -41,6 +43,7 @@ import { NfcService } from './modules/shared/services/nfc.service';
     SharedModule,
   ],
   providers: [
+    AppCheckUpdateService,
     DatePipe,
     NfcService,
     ScreenTrackingService,

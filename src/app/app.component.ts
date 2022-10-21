@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BadgeEditDialogComponent } from './modules/shared/components/badge-edit-dialog/badge-edit-dialog.component';
 import { NfcService } from './modules/shared/services/nfc.service';
 import { User } from './models/user.models';
+import { AppCheckUpdateService } from './modules/shared/services/app-check-update.service';
 
 @Component({
   selector: 'ob-root',
@@ -43,7 +44,7 @@ export class AppComponent implements OnInit {
               private datePipe: DatePipe,
               private dialog: MatDialog,
               public nfcService: NfcService,
-              private renderer: Renderer2
+              private appCheckUpdateService: AppCheckUpdateService
   ) {
 
   }
