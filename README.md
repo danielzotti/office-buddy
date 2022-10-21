@@ -7,9 +7,10 @@ It has been created just to play with some cool technologies:
 - Angular
 - Angular Material
 - Angularfire
+- Angular PWA
 - Firebase Realtime Database
-- NFC Browser API
 - Permission API
+- NFC Browser API
 - Android device remote debugging
 
 ## Test it on your local machine
@@ -42,3 +43,19 @@ It has been created just to play with some cool technologies:
 - [How to allow access outside localhost](https://stackoverflow.com/questions/43492354/how-to-allow-access-outside-localhost)
 - [NFC examples](https://whatwebcando.today/nfc.html)
 - [NFC examples (Web.dev)](https://web.dev/nfc/#check-for-permission)
+
+## Todo
+- ~~PWA: Manage app version with packages.json~~
+- ~~PWA: Check for updates~~
+- Router
+  - Home with 2 buttons (in/out) + NFC capability
+  - Users list page
+  - Badges list page
+  - User profile page
+- Manage users
+  - CRUD (for the creation the `uid` is needed, and `uid` is created after the first login)
+  - Authorization (simple or admin)
+- Every user should manage their badges only
+- Send notifications to colleagues after badge
+- Use Google Spreadsheet to store just badges data in order to do some analysis
+- ...more
