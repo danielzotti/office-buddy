@@ -2,7 +2,7 @@
 
 <div id="app-content">
 
-  <div class="home" *ngIf="auth.user| async as user; else showNotAuthenticated">
+  <div class="home" *ngIf="isUserAuthorized">
 
     <mat-card *ngIf="hasNfcCapability$ | async">
       <mat-card-title>NFC badge</mat-card-title>
@@ -86,37 +86,50 @@
     <mat-card *ngIf="(badges$ | async) as badges">
       <mat-card-title>Badge list</mat-card-title>
       <mat-card-content>
-        <mat-list class="badge-list">
-          <mat-list-item class="badge-list-item" *ngFor="let badge of badges">
+        <div class="badge-list">
 
-            <button mat-mini-fab color="warn" (click)="deleteBadgeItem(badge)">
-              <mat-icon>delete</mat-icon>
-            </button>
-            <button mat-mini-fab color="primary" (click)="openUpdateBadgeModal(badge)">
-              <mat-icon>edit</mat-icon>
-            </button>
+          <p *ngIf="!badges.length">No data</p>
 
-            <mat-icon *ngIf="badge.clock === 'in'" color="primary">login</mat-icon>
-            <mat-icon *ngIf="badge.clock === 'out'" color="warn">logout</mat-icon>
+          <div class="badge-list-item" *ngFor="let badge of badges">
 
-            <span>{{ badge.username }}</span>&nbsp;
-            <strong>{{ badge.clock | uppercase }}</strong>&nbsp;
-            <span *ngIf="badge.timestamp">at&nbsp;<em>{{ badge.timestamp | date:'dd/MM/yyyy HH:mm'}}</em></span>
+            <span>
+              <mat-icon *ngIf="badge.clock === 'in'" class="badge-in">login</mat-icon>
+              <mat-icon *ngIf="badge.clock === 'out'" class="badge-out">logout</mat-icon>
 
-          </mat-list-item>
-        </mat-list>
+              <span *ngIf="badge.timestamp"><strong>{{ badge.timestamp | date:'dd/MM/yyyy HH:mm'}}</strong></span>
+            </span>
+
+            <span>{{ badge.username }}</span>
+
+            <span>
+              <button mat-icon-button color="warn" (click)="deleteBadgeItem(badge)">
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button mat-icon-button color="primary" (click)="openUpdateBadgeModal(badge)">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </span>
+
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
 
   </div>
 
-  <ng-template #showNotAuthenticated>
+  <ng-container *ngIf="!(auth.user | async)">
     <div class="no-login">
       <p>You have to be authenticated to use this app.
         <ob-login-with-google color="primary"></ob-login-with-google>
       </p>
     </div>
-  </ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="(auth.user | async) && !isUserAuthorized">
+    <div class="no-login">
+      <p>You are not authorized to use this app.</p>
+    </div>
+  </ng-container>
 
 </div>
 

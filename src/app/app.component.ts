@@ -17,6 +17,8 @@ export class AppComponent implements OnInit {
   // AUTH
   username: string | undefined;
 
+  isUserAuthorized = false;
+
   //BADGES
   badgesRef: AngularFireList<Badge> = this.db.list<Badge>('/badge', ref => ref.orderByChild('timestamp'));
   badges$: Observable<BadgeWithKey[]> = of([]);
@@ -63,6 +65,7 @@ export class AppComponent implements OnInit {
     });
 
     this.auth.user.subscribe(user => {
+      this.isUserAuthorized = true;
       this.username = user?.email || undefined;
       this.newBadge = {
         ...this.newBadge,
@@ -71,7 +74,6 @@ export class AppComponent implements OnInit {
     });
 
     this.badges$ = this.badgesRef.snapshotChanges().pipe(
-      distinctUntilChanged(),
       map((changes: SnapshotAction<Badge>[]) =>
         changes.map((c: SnapshotAction<Badge>) => ({ key: c.payload.key, ...c.payload.val() } as BadgeWithKey))
       ),
@@ -80,6 +82,10 @@ export class AppComponent implements OnInit {
       map((array: BadgeWithKey[]) => array.reverse()),
       catchError((err) => {
         console.log({ err });
+        this.isLoading = false;
+        if(err.code === 'PERMISSION_DENIED') {
+          this.isUserAuthorized = false;
+        }
         return of([]);
       })
     );

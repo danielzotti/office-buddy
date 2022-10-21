@@ -76,7 +76,29 @@ $nfc-badge-button-icon-size: $nfc-badge-button-size * 0.75;
 }
 
 .badge-list-item {
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+
   &:nth-of-type(2n) {
     background-color: #efefef;
+  }
+
+  > span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .badge-in {
+    color: colors.$green;
+  }
+
+  .badge-out {
+    color: colors.$red;
   }
 }
