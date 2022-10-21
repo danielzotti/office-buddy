@@ -1,32 +1,32 @@
 name: Deploy Angular SPA to GitHub Pages
 
 on:
-  push: 
-    branches:   
-      - master
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        persist-credentials: false
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Use Node.js 14.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
 
-    - name: Build
-      run: |
-         npm install -g @angular/cli
-         npm install
-         ng build --base-href="/office-buddy/"
-    - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.ACCESS_TOKEN }}
-        publish_dir: dist
-        enable_jekyll: true
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy
+        if: success()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+          publish_dir: dist
+          enable_jekyll: true
