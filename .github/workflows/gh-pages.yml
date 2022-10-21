@@ -3,7 +3,7 @@ name: Deploy Angular SPA to GitHub Pages
 on:
   push:
     branches:
-      - master
+      - prods
 
 jobs:
   deploy:
@@ -21,7 +21,7 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build
+        run: npm run build:prod
 
       - name: Deploy
         if: success()
