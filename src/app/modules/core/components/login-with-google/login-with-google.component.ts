@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { GoogleAuthProvider } from '@angular/fire/auth';
 import { ThemePalette } from '@angular/material/core';
+import { AuthService } from '../../services/auth.service';
+import { map, Observable } from 'rxjs';
+import { AuthUser } from '../../../../models/auth.models';
 
 @Component({
   selector: 'ob-login-with-google',
@@ -12,19 +13,20 @@ export class LoginWithGoogleComponent implements OnInit {
   @Input()
   color: ThemePalette;
 
-  constructor(public auth: AngularFireAuth) {
+  user$: Observable<AuthUser | null> = this.authService.user$;
+
+  constructor(private authService: AuthService) {
   }
 
   ngOnInit(): void {
+
   }
 
   login() {
-    this.auth.signInWithPopup(new GoogleAuthProvider).then(
-      console.log,
-      (err) => alert(err.message));
+    this.authService.login();
   }
 
   logout() {
-    this.auth.signOut().then(console.log);
+    this.authService.logout();
   }
 }

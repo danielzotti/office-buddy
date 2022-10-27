@@ -15,10 +15,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { NfcService } from './modules/shared/services/nfc.service';
 import { AppCheckUpdateService } from './modules/shared/services/app-check-update.service';
+import { AppRoutingModule } from './app-routing.module';
+import { HomeComponent } from './pages/home/home.component';
+import { RouterOutlet } from '@angular/router';
+import { BadgeListComponent } from './pages/badge-list/badge-list.component';
+import { UserListComponent } from './pages/user-list/user-list.component';
+import { NotFoundComponent } from './pages/not-found/not-found.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
+    BadgeListComponent,
+    UserListComponent,
+    NotFoundComponent
   ],
   imports: [
     // ANGULAR
@@ -41,6 +51,8 @@ import { AppCheckUpdateService } from './modules/shared/services/app-check-updat
     // CUSTOM
     CoreModule,
     SharedModule,
+    AppRoutingModule,
+    RouterOutlet,
   ],
   providers: [
     AppCheckUpdateService,

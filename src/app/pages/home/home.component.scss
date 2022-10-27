@@ -1,0 +1,45 @@
+@use "../../../scss/colors";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.nfc-badge-button {
+  margin-block: 20px;
+}
+
+.new-badge-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding-block: 20px;
+}
+
+$nfc-badge-button-size: 120px;
+$nfc-badge-button-icon-size: $nfc-badge-button-size * 0.75;
+
+.new-badge-button {
+  width: $nfc-badge-button-size;
+  height: $nfc-badge-button-size;
+
+  .mat-fab.mat-button-wrapper {
+    width: $nfc-badge-button-icon-size;
+    height: $nfc-badge-button-icon-size;
+  }
+
+  .mat-icon {
+    font-size: $nfc-badge-button-icon-size;
+    width: $nfc-badge-button-icon-size;
+    height: $nfc-badge-button-icon-size;
+  }
+
+  &.in {
+    background-color: colors.$green;
+  }
+
+  &.out {
+    background-color: colors.$red;
+  }
+}

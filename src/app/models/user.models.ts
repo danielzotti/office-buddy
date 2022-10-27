@@ -1,5 +1,9 @@
 export interface User {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
+  email?: string;
+  displayName?: string;
+  isAdmin?: boolean;
+}
+
+export interface UserWithKey extends User {
+  key: string;
 }

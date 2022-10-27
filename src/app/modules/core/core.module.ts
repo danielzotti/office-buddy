@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
-import { ToolbarComponent } from './toolbar/toolbar.component';
+import { ToolbarComponent } from './components/toolbar/toolbar.component';
 import { MaterialModule } from '../material/material.module';
-import { LoginWithGoogleComponent } from './login-with-google/login-with-google.component';
+import { LoginWithGoogleComponent } from './components/login-with-google/login-with-google.component';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive, RouterLinkWithHref } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,10 @@ import { CommonModule } from '@angular/common';
   imports: [
     CommonModule,
     MaterialModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    RouterLinkWithHref,
+    RouterLink,
+    RouterLinkActive
   ],
   exports: [
     MaterialModule,

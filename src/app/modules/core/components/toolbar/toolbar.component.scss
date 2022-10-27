@@ -1,0 +1,11 @@
+@use "../../../../../scss/colors";
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.mat-menu-item {
+  &.active {
+    background-color: colors.$lightgray;
+  }
+}

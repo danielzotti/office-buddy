@@ -17,7 +17,7 @@
   overflow: auto;
 }
 
-.home {
+.app-content-inner {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -27,78 +27,4 @@
 
 .no-login {
   text-align: center;
-}
-
-
-.nfc-badge-button {
-  margin-block: 20px;
-}
-
-.new-badge-buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  padding: 20px;
-}
-
-$nfc-badge-button-size: 120px;
-$nfc-badge-button-icon-size: $nfc-badge-button-size * 0.75;
-
-.new-badge-button {
-  width: $nfc-badge-button-size;
-  height: $nfc-badge-button-size;
-
-  .mat-fab.mat-button-wrapper {
-    width: $nfc-badge-button-icon-size;
-    height: $nfc-badge-button-icon-size;
-  }
-
-  .mat-icon {
-    font-size: $nfc-badge-button-icon-size;
-    width: $nfc-badge-button-icon-size;
-    height: $nfc-badge-button-icon-size;
-  }
-
-  &.in {
-    background-color: colors.$green;
-  }
-
-  &.out {
-    background-color: colors.$red;
-  }
-}
-
-.badge-list {
-  .mat-mini-fab {
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-}
-
-.badge-list-item {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  justify-content: space-between;
-
-  &:nth-of-type(2n) {
-    background-color: #efefef;
-  }
-
-  > span {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .badge-in {
-    color: colors.$green;
-  }
-
-  .badge-out {
-    color: colors.$red;
-  }
 }

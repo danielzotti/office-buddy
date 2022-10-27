@@ -1,0 +1,28 @@
+<mat-toolbar color="primary">
+  <button mat-button routerLink="/">
+    <mat-icon>apartment</mat-icon>
+    <span>Office Buddy <small><em>v{{ version || '0' }}</em></small></span>
+  </button>
+  <span class="spacer"></span>
+
+  <button mat-button [matMenuTriggerFor]="menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu" xPosition="before">
+    <button mat-menu-item (click)="login()" *ngIf="!username">
+      Login
+    </button>
+    <ng-container *ngIf="username">
+      <ng-container *ngIf="isAuthorized">
+        <a mat-menu-item routerLinkActive="active" routerLink="/home">Home</a>
+        <a mat-menu-item routerLinkActive="active" routerLink="/badges">Badges</a>
+        <a mat-menu-item routerLinkActive="active" routerLink="/users">Users</a>
+        <mat-divider></mat-divider>
+      </ng-container>
+      <button mat-menu-item (click)="logout()">
+        Logout <em>{{ username }}</em>
+      </button>
+    </ng-container>
+  </mat-menu>
+
+</mat-toolbar>
