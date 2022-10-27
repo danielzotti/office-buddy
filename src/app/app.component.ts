@@ -1,6 +1,5 @@
-import { Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { AngularFireDatabase, AngularFireList, SnapshotAction } from '@angular/fire/compat/database';
-import { catchError, distinctUntilChanged, map, Observable, of, Subscription, takeUntil, tap } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { catchError, filter, map, Observable, of, tap } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Badge, BadgeForm, BadgeWithKey } from './models/badge.models';
 import { DatePipe } from '@angular/common';
@@ -9,6 +8,9 @@ import { BadgeEditDialogComponent } from './modules/shared/components/badge-edit
 import { NfcService } from './modules/shared/services/nfc.service';
 import { User } from './models/user.models';
 import { AppCheckUpdateService } from './modules/shared/services/app-check-update.service';
+import { environment } from '../environments/environment';
+import { BadgeApiService } from './api/badge-api.service';
+import { UserApiService } from './api/user-api.service';
 
 @Component({
   selector: 'ob-root',
@@ -21,11 +23,10 @@ export class AppComponent implements OnInit {
   isUserAuthorized = false;
 
   //BADGES
-  badgesRef: AngularFireList<Badge> = this.db.list<Badge>('/badge', ref => ref.orderByChild('timestamp'));
-  badges$: Observable<BadgeWithKey[]> = of([]);
+  badges$: Observable<BadgeWithKey[]> | undefined;
   newBadge: BadgeForm = {
     clock: 'in',
-    timestamp: this.datePipe.transform(new Date(), 'yyyy-MM-ddTHH:mm') ?? undefined
+    timestamp: this.datePipe.transform(new Date(), environment.formatter.badgeIsoDateTime) ?? undefined
   };
 
   // NFC
@@ -40,9 +41,10 @@ export class AppComponent implements OnInit {
   isLoading = true;
 
   constructor(public auth: AngularFireAuth,
-              private db: AngularFireDatabase,
               private datePipe: DatePipe,
               private dialog: MatDialog,
+              private badgeApiService: BadgeApiService,
+              private authUserApiService: UserApiService,
               public nfcService: NfcService,
               private appCheckUpdateService: AppCheckUpdateService
   ) {
@@ -69,52 +71,55 @@ export class AppComponent implements OnInit {
       this.doBadge(message.data);
     });
 
-    this.auth.user.subscribe(user => {
-      this.isUserAuthorized = true;
-      console.log({ user });
-      if(!user?.uid) {
-        return;
-      }
-      this.user = {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName
-      };
-
-      this.newBadge = {
-        ...this.newBadge,
-        user: this.user
-      };
+    this.auth.user.pipe(
+      filter(user => !user?.uid),
+      tap(_ => {
+        this.isUserAuthorized = false;
+        this.user = undefined;
+      })
+    ).subscribe(_ => {
+      console.log('User logged out');
     });
 
-    this.badges$ = this.badgesRef.snapshotChanges().pipe(
-      map((changes: SnapshotAction<Badge>[]) =>
-        changes.map((c: SnapshotAction<Badge>) => ({ key: c.payload.key, ...c.payload.val() } as BadgeWithKey))
-      ),
-      tap(console.debug),
-      tap(_ => this.isLoading = false),
-      map((array: BadgeWithKey[]) => array.reverse()),
-      catchError((err) => {
-        console.log({ err });
-        this.isLoading = false;
-        if(err.code === 'PERMISSION_DENIED') {
-          this.isUserAuthorized = false;
-        }
-        return of([]);
-      })
-    );
+    this.auth.user.pipe(
+      filter((user, index) => !!user),
+      tap((user) => {
+        this.isUserAuthorized = true;
+        const { uid, email, displayName } = user as User;
+        this.user = { uid, email, displayName };
+        this.newBadge = {
+          ...this.newBadge,
+          user: this.user
+        };
+
+        this.badges$ = this.badgeApiService.getList().pipe(
+          tap(console.debug),
+          tap(_ => this.isLoading = false),
+          map((array: BadgeWithKey[]) => array.reverse()),
+          catchError((err) => {
+            console.log({ err });
+            this.isLoading = false;
+            if(err.code === 'PERMISSION_DENIED') {
+              this.isUserAuthorized = false;
+            }
+            return of([]);
+          })
+        );
+        this.authUserApiService.getList().subscribe(users => console.log({ users }));
+      }),
+    ).subscribe();
   }
 
   addBadgeItem(badge: Badge) {
-    this.badgesRef.push(badge);
+    this.badgeApiService.create(badge).then(res => console.log('Updated', badge));
   }
 
   deleteBadgeItem(badge: BadgeWithKey) {
     const canDelete = confirm(`Are you sure to delete badge by ${ badge.user?.email }
-${ badge.clock.toUpperCase() }: ${ this.datePipe.transform(new Date(badge.timestamp), 'dd/MM/yyyy HH:mm') }?`);
+${ badge.clock.toUpperCase() }: ${ this.datePipe.transform(new Date(badge.timestamp), environment.formatter.badgeHumanDateTime) }?`);
 
     if(canDelete && badge.key) {
-      this.badgesRef.remove(badge.key).then(res => console.log('Deleted', badge));
+      this.badgeApiService.deleteByKey(badge.key).then(res => console.log('Deleted', badge));
     }
   }
 
@@ -128,7 +133,7 @@ ${ badge.clock.toUpperCase() }: ${ this.datePipe.transform(new Date(badge.timest
 
   doBadge(clock: Badge['clock']) {
     if(!this.user) {
-      console.log(`No usern to badge for badge ${ clock }`);
+      alert(`No username to use for badge ${ clock }`);
       return;
     }
     const badge: Badge = {
@@ -136,7 +141,8 @@ ${ badge.clock.toUpperCase() }: ${ this.datePipe.transform(new Date(badge.timest
       clock,
       timestamp: new Date().toISOString()
     };
-    this.badgesRef.push(badge);
+    // this.badgesRef.push(badge);
+    this.addBadgeItem(badge);
   }
 
   openUpdateBadgeModal(badge: BadgeWithKey) {
@@ -147,7 +153,8 @@ ${ badge.clock.toUpperCase() }: ${ this.datePipe.transform(new Date(badge.timest
     dialogRef.componentInstance.badge = badge;
 
     dialogRef.componentInstance.formSubmitted.subscribe(editedBadge => {
-      this.badgesRef.set(badge.key, editedBadge).then(res => console.log('Updated', editedBadge));
+      // this.badgesRef.set(badge.key, editedBadge).then(res => console.log('Updated', editedBadge));
+      this.badgeApiService.update(badge.key, editedBadge).then(res => console.log('Updated', editedBadge));
       dialogRef.close();
     });
 

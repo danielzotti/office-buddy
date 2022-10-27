@@ -12,6 +12,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 
 const selectedModules = [
   MatAutocompleteModule,
@@ -19,10 +21,12 @@ const selectedModules = [
   MatCardModule,
   MatDatepickerModule,
   MatDialogModule,
+  MatDividerModule,
   MatFormFieldModule,
   MatIconModule,
   MatInputModule,
   MatListModule,
+  MatMenuModule,
   MatNativeDateModule,
   MatProgressSpinnerModule,
   MatSelectModule,

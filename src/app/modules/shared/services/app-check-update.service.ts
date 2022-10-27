@@ -13,7 +13,7 @@ export class AppCheckUpdateService {
       .pipe(filter((event): event is VersionReadyEvent => event.type === 'VERSION_READY'))
       .subscribe(event => {
         console.debug({ versionCheck: event });
-        if(confirm(`A new version is available, do you want to upgrade from v${ event.currentVersion } to v${ event.latestVersion }?`)) {
+        if(confirm(`A new version is available, do you want to install it?`)) {
           // Reload the page to update to the latest version.
           document.location.reload();
         }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -10,14 +11,14 @@ export class DateService {
   }
 
   jsToHtmlDate(jsDate: Date) {
-    return this.datePipe.transform(jsDate, 'yyyy-MM-ddTHH:mm') || undefined;
+    return this.datePipe.transform(jsDate, environment.formatter.badgeIsoDateTime) || undefined;
   }
 
   isoToHtmlDate(isoDate?: string) {
     if(!isoDate) {
       return;
     }
-    return this.datePipe.transform(new Date(isoDate), 'yyyy-MM-ddTHH:mm') || undefined;
+    return this.datePipe.transform(new Date(isoDate), environment.formatter.badgeIsoDateTime) || undefined;
   }
 
   htmlToIso(htmlDate: string) {

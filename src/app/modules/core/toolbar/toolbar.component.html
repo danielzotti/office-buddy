@@ -2,5 +2,23 @@
   <mat-icon>apartment</mat-icon>
   <span>Office Buddy <small><em>v{{ version || '0' }}</em></small></span>
   <span class="spacer"></span>
-  <ob-login-with-google></ob-login-with-google>
+
+  <button mat-button [matMenuTriggerFor]="menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu" xPosition="before">
+    <button mat-menu-item (click)="login()" *ngIf="!username">
+      Login
+    </button>
+    <ng-container *ngIf="username">
+      <button mat-menu-item (click)="logout()">
+        Logout
+      </button>
+      <mat-divider></mat-divider>
+      <span mat-menu-item disabled>
+        {{ username }}
+      </span>
+    </ng-container>
+  </mat-menu>
+
 </mat-toolbar>

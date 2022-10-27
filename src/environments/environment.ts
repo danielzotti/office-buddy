@@ -15,8 +15,18 @@ export const environment = {
     authDomain: 'office-buddy-trieste.firebaseapp.com',
     messagingSenderId: '1068194485548',
     measurementId: 'G-YLR034EBYB',
-    databaseURL:'https://office-buddy-trieste-default-rtdb.europe-west1.firebasedatabase.app/'
+    databaseURL: 'https://office-buddy-trieste-default-rtdb.europe-west1.firebasedatabase.app/'
   },
+  firebaseApiUrls: {
+    badges: '/badges',
+    users: '/users',
+  },
+  formatter: {
+    shortDate: '',
+    longDate: '',
+    badgeIsoDateTime: 'yyyy-MM-ddTHH:mm',
+    badgeHumanDateTime: 'dd/MM/yyyy HH:mm'
+  }
 };
 
 /*
