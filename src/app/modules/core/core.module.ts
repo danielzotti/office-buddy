@@ -5,11 +5,23 @@ import { LoginWithGoogleComponent } from './components/login-with-google/login-w
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterLinkWithHref } from '@angular/router';
+import { AdminOnlyDirective } from './directives/admin-only.directive';
+import { AuthorizedOnlyDirective } from './directives/authorized-only.directive';
+
+const directives = [
+  AdminOnlyDirective,
+  AuthorizedOnlyDirective,
+];
+
+const components = [
+  LoginWithGoogleComponent,
+  ToolbarComponent,
+];
 
 @NgModule({
   declarations: [
-    ToolbarComponent,
-    LoginWithGoogleComponent
+    ...components,
+    ...directives
   ],
   imports: [
     CommonModule,
@@ -21,8 +33,8 @@ import { RouterLink, RouterLinkActive, RouterLinkWithHref } from '@angular/route
   ],
   exports: [
     MaterialModule,
-    ToolbarComponent,
-    LoginWithGoogleComponent
+    ...components,
+    ...directives
   ]
 })
 export class CoreModule {

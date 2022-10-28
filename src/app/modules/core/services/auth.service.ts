@@ -3,7 +3,8 @@ import { GoogleAuthProvider } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserApiService } from '../../../api/user-api.service';
 import { AuthUser, FirebaseUser } from '../../../models/auth.models';
-import { BehaviorSubject, filter, tap } from 'rxjs';
+import { BehaviorSubject, filter, map, tap } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,14 +14,22 @@ export class AuthService {
   private userSubject = new BehaviorSubject<AuthUser | null>(null);
   public user$ = this.userSubject.asObservable();
 
-  constructor(private angularFireAuth: AngularFireAuth, private userApiService: UserApiService) {
+  public isAdmin$ = this.user$.pipe(map(u => !!u?.isAdmin));
+  public isAuthorized$ = this.user$.pipe(map(u => !!u?.isAuthorized));
+  public isAuthenticated$ = this.user$.pipe(map(u => !!u));
+
+  constructor(
+    private angularFireAuth: AngularFireAuth,
+    private userApiService: UserApiService,
+    private router: Router,
+  ) {
     this.angularFireAuth.authState.pipe(filter(user => !!user)).subscribe(user => this.retrieveUserInfo(user as FirebaseUser));
   }
 
   login() {
     this.angularFireAuth.signInWithPopup(new GoogleAuthProvider).then(
       (auth) => {
-        console.log('[AuthService login', auth.user);
+        console.debug('[AuthService login', auth.user);
       },
       (err) => {
         this.resetUserInfo();
@@ -29,7 +38,10 @@ export class AuthService {
   }
 
   logout() {
-    this.angularFireAuth.signOut().then(_ => this.resetUserInfo());
+    this.angularFireAuth.signOut().then(_ => {
+      this.router.navigate(['login']);
+      this.resetUserInfo();
+    });
   }
 
   setUserInfo(user: AuthUser) {
@@ -41,17 +53,18 @@ export class AuthService {
   }
 
   retrieveUserInfo(user: FirebaseUser) {
-    console.log({ user });
     if(!user?.uid) {
       this.resetUserInfo();
       return;
     }
     const { uid, email, displayName } = user;
-    this.setUserInfo({ uid, email, displayName, isAdmin: false, isAuthorized: false });
+    const userInfoBase = { uid, email, displayName, isAdmin: false, isAuthorized: false };
+    this.setUserInfo(userInfoBase);
     this.userApiService.getByKey(user.uid)?.valueChanges().subscribe({
         next: authorizedUser => {
-          console.log('[AuthService retrieveUserInfo OK]', { uid, email, displayName, isAdmin: authorizedUser?.isAdmin });
-          this.setUserInfo({ uid, email, displayName, isAdmin: authorizedUser?.isAdmin, isAuthorized: true });
+          console.debug('[AuthService retrieveUserInfo OK]', { ...userInfoBase, isAdmin: authorizedUser?.isAdmin });
+          this.setUserInfo({ ...userInfoBase, isAdmin: authorizedUser?.isAdmin, isAuthorized: !!authorizedUser });
+          this.router.navigate(['home']);
         },
         error: error => {
           console.error('[AuthService retrieveUserInfo ERROR]', error);

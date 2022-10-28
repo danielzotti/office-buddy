@@ -11,17 +11,15 @@ import { map, tap } from 'rxjs';
 export class ToolbarComponent implements OnInit {
 
   version = environment.appVersion;
-  username: string | undefined | null;
-  isAuthorized = false;
+
+  isAuthenticated$ = this.authService.isAuthenticated$;
+  username$ = this.authService.user$.pipe(map(u => u?.email));
 
   constructor(private authService: AuthService) {
   }
 
   ngOnInit(): void {
-    this.authService.user$.subscribe(user => {
-      this.username = user?.email;
-      this.isAuthorized = !!user?.isAuthorized;
-    });
+
   }
 
   login() {

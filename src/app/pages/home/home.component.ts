@@ -3,9 +3,9 @@ import { Badge, BadgeForm, BadgeUser } from '../../models/badge.models';
 import { NfcService } from '../../modules/shared/services/nfc.service';
 import { BadgeApiService } from '../../api/badge-api.service';
 import { filter, tap } from 'rxjs';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { environment } from '../../../environments/environment';
 import { DatePipe } from '@angular/common';
+import { AuthService } from '../../modules/core/services/auth.service';
 
 @Component({
   selector: 'ob-home',
@@ -32,7 +32,7 @@ export class HomeComponent implements OnInit {
   };
 
   constructor(
-    private auth: AngularFireAuth,
+    private auth: AuthService,
     private nfcService: NfcService,
     private badgeApiService: BadgeApiService,
     private datePipe: DatePipe,
@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit {
       this.doBadge(message.data);
     });
 
-    this.auth.user.pipe(
+    this.auth.user$.pipe(
       filter((user) => !!user),
       tap((user) => {
         const { uid, email, displayName } = user as BadgeUser;
@@ -92,7 +92,7 @@ export class HomeComponent implements OnInit {
   }
 
   addBadgeItem(badge: Badge) {
-    this.badgeApiService.create(badge).then(res => console.log('Updated', badge));
+    this.badgeApiService.create(badge).then(res => console.debug('Updated', badge));
   }
 
   startNfcScan() {

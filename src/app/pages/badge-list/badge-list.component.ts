@@ -32,7 +32,7 @@ export class BadgeListComponent implements OnInit {
       tap(_ => this.isLoading = false),
       map((array: BadgeWithKey[]) => array.reverse()),
       catchError((err) => {
-        console.log({ err });
+        console.debug({ err });
         this.isLoading = false;
         return of([]);
       })
@@ -45,7 +45,7 @@ export class BadgeListComponent implements OnInit {
 ${ badge.clock.toUpperCase() }: ${ this.datePipe.transform(new Date(badge.timestamp), environment.formatter.badgeHumanDateTime) }?`);
 
     if(canDelete && badge.key) {
-      this.badgeApiService.deleteByKey(badge.key).then(res => console.log('Deleted', badge));
+      this.badgeApiService.deleteByKey(badge.key).then(res => console.debug('Deleted', badge));
     }
   }
 
@@ -58,8 +58,7 @@ ${ badge.clock.toUpperCase() }: ${ this.datePipe.transform(new Date(badge.timest
     dialogRef.componentInstance.badge = badge;
 
     dialogRef.componentInstance.formSubmitted.subscribe(editedBadge => {
-      // this.badgesRef.set(badge.key, editedBadge).then(res => console.log('Updated', editedBadge));
-      this.badgeApiService.update(badge.key, editedBadge).then(res => console.log('Updated', editedBadge));
+      this.badgeApiService.update(badge.key, editedBadge).then(res => console.debug('Updated', editedBadge));
       dialogRef.close();
     });
 

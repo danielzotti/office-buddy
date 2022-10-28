@@ -9,11 +9,11 @@ import { AuthUser } from './models/auth.models';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  // AUTH
-  isUserAuthorized = false;
-  user: AuthUser | null = null;
 
-  constructor(public authService: AuthService,
+  isAuthorized$ = this.authService.isAuthorized$;
+  isAuthenticated$ = this.authService.isAuthenticated$;
+
+  constructor(private authService: AuthService,
               private appCheckUpdateService: AppCheckUpdateService
   ) {
 
@@ -22,14 +22,6 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     // Check if app has an update
     this.appCheckUpdateService.init();
-
-    // Check if user is authorized
-    this.authService.user$.subscribe(user => {
-      console.warn(user)
-      this.isUserAuthorized = !!user?.isAuthorized;
-      this.user = user;
-    });
-
   }
 
 }

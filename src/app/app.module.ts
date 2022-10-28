@@ -17,10 +17,11 @@ import { NfcService } from './modules/shared/services/nfc.service';
 import { AppCheckUpdateService } from './modules/shared/services/app-check-update.service';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './pages/home/home.component';
-import { RouterOutlet } from '@angular/router';
+import { RouterLinkWithHref, RouterOutlet } from '@angular/router';
 import { BadgeListComponent } from './pages/badge-list/badge-list.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
+import { LoginComponent } from './pages/login/login.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
     HomeComponent,
     BadgeListComponent,
     UserListComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    LoginComponent
   ],
   imports: [
     // ANGULAR
@@ -53,6 +55,7 @@ import { NotFoundComponent } from './pages/not-found/not-found.component';
     SharedModule,
     AppRoutingModule,
     RouterOutlet,
+    RouterLinkWithHref,
   ],
   providers: [
     AppCheckUpdateService,

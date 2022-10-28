@@ -2,11 +2,11 @@
 
 <div id="app-content">
 
-  <div class="app-content-inner" *ngIf="isUserAuthorized">
+  <div class="app-content-inner" *ngIf="(isAuthorized$ | async)">
     <router-outlet></router-outlet>
   </div>
 
-  <ng-container *ngIf="!user">
+  <ng-container *ngIf="!(isAuthenticated$ | async)">
     <div class="no-login">
       <p>You have to be authenticated to use this app.
         <ob-login-with-google color="primary"></ob-login-with-google>
@@ -14,7 +14,7 @@
     </div>
   </ng-container>
 
-  <ng-container *ngIf="user && !isUserAuthorized">
+  <ng-container *ngIf="(isAuthenticated$ | async) && !(isAuthorized$ | async)">
     <div class="no-login">
       <p>You are not authorized to use this app.</p>
     </div>
