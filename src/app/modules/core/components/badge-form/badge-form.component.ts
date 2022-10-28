@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FormControl, FormGroup } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Badge, BadgeForm, BadgeWithKey } from '../../../../models/badge.models';
-import { DateService } from '../../services/date.service';
+import { DateService } from '../../../shared/services/date.service';
 
 @Component({
   selector: 'ob-badge-form',

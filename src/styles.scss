@@ -1,24 +1,5 @@
-@use "scss/variables";
-
-html, body {
-  display: block;
-  position: relative;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-.app-content-inner {
-  display: flex;
-  flex-direction: column;
-  gap: variables.$spacing-medium;
-  max-width: 600px;
-  margin-inline: auto;
-  width: 100%;
-}
+@import "scss/variables";
+@import "scss/colors";
+@import "scss/base";
+@import "scss/common";
+@import "scss/material-override";

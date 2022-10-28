@@ -6,6 +6,8 @@ import { filter, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../modules/core/services/auth.service';
+import { ConfirmDialogService } from '../../modules/shared/components/dialog/confirm-dialog.service';
+import { BadgeFormComponent } from '../../modules/core/components/badge-form/badge-form.component';
 
 @Component({
   selector: 'ob-home',
@@ -36,6 +38,7 @@ export class HomeComponent implements OnInit {
     private nfcService: NfcService,
     private badgeApiService: BadgeApiService,
     private datePipe: DatePipe,
+    private confirmDialog: ConfirmDialogService
   ) {
   }
 
@@ -92,7 +95,15 @@ export class HomeComponent implements OnInit {
   }
 
   addBadgeItem(badge: Badge) {
-    this.badgeApiService.create(badge).then(res => console.debug('Updated', badge));
+    this.badgeApiService.create(badge).then(res => {
+      console.debug('Updated', badge);
+      this.confirmDialog.open({
+        message: JSON.stringify(badge, null, 2),
+        confirmText: 'Ok',
+        title: 'Badge sent',
+      });
+      // this.confirmDialog.confirmed().subscribe(console.warn);
+    });
   }
 
   startNfcScan() {

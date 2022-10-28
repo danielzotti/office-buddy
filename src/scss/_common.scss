@@ -1,0 +1,10 @@
+@use "variables";
+
+.app-content-inner {
+  display: flex;
+  flex-direction: column;
+  gap: variables.$spacing-medium;
+  max-width: variables.$app-content-max-width;
+  margin-inline: auto;
+  width: 100%;
+}

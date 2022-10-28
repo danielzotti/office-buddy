@@ -4,7 +4,7 @@ import { BadgeWithKey } from '../../models/badge.models';
 import { environment } from '../../../environments/environment';
 import {
   BadgeEditDialogComponent
-} from '../../modules/shared/components/badge-edit-dialog/badge-edit-dialog.component';
+} from '../../modules/core/components/badge-edit-dialog/badge-edit-dialog.component';
 import { BadgeApiService } from '../../api/badge-api.service';
 import { DatePipe } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
