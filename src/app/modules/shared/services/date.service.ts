@@ -14,6 +14,10 @@ export class DateService {
     return this.datePipe.transform(jsDate, environment.formatter.badgeIsoDateTime) || undefined;
   }
 
+  isoToHumanDate(isoDate: string) {
+    return this.datePipe.transform(isoDate, environment.formatter.badgeHumanDateTime) || undefined;
+  }
+
   isoToHtmlDate(isoDate?: string) {
     if(!isoDate) {
       return;

@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../modules/core/services/auth.service';
 import { ConfirmDialogService } from '../../modules/shared/components/dialog/confirm-dialog.service';
-import { BadgeFormComponent } from '../../modules/core/components/badge-form/badge-form.component';
+import { DateService } from '../../modules/shared/services/date.service';
 
 @Component({
   selector: 'ob-home',
@@ -38,6 +38,7 @@ export class HomeComponent implements OnInit {
     private nfcService: NfcService,
     private badgeApiService: BadgeApiService,
     private datePipe: DatePipe,
+    private dateService: DateService,
     private confirmDialog: ConfirmDialogService
   ) {
   }
@@ -95,14 +96,15 @@ export class HomeComponent implements OnInit {
   }
 
   addBadgeItem(badge: Badge) {
-    this.badgeApiService.create(badge).then(res => {
+    this.badgeApiService.create(badge).then(() => {
       console.debug('Updated', badge);
       this.confirmDialog.open({
-        message: JSON.stringify(badge, null, 2),
+        html: `<div><label>Email:</label> ${ badge.user.email }</div>
+<div><label>Clock:</label> ${ badge.clock }</div>
+<div><label>Time:</label> ${ this.dateService.isoToHumanDate(badge.timestamp) }</div>`,
         confirmText: 'Ok',
         title: 'Badge sent',
       });
-      // this.confirmDialog.confirmed().subscribe(console.warn);
     });
   }
 

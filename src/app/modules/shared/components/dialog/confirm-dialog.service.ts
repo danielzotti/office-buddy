@@ -19,6 +19,7 @@ export class ConfirmDialogService {
       data: {
         title: options.title,
         message: options.message,
+        html: options.html,
         cancelText: options.cancelText,
         confirmText: options.confirmText,
       }

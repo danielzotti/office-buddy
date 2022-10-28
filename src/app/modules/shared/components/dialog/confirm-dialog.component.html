@@ -1,6 +1,7 @@
 <h1 *ngIf="!!data.title" mat-dialog-title>{{ data.title }}</h1>
-<mat-dialog-content *ngIf="!!data.message">
-  <p>{{ data.message }}</p>
+<mat-dialog-content>
+  <p *ngIf="!!data.message">{{ data.message }}</p>
+  <div *ngIf="!!data.html" [innerHTML]="data.html"></div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
