@@ -1,18 +1,19 @@
 @use "../../../scss/colors";
+@use "../../../scss/variables";
 
 .badge-list {
   .mat-mini-fab {
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: variables.$spacing-small;
+    margin-right: variables.$spacing-small;
   }
 }
 
 .badge-list-item {
-  padding: 10px;
+  padding: variables.$spacing-default;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: variables.$spacing-default;
   align-items: center;
   justify-content: space-between;
 
@@ -23,7 +24,7 @@
   > span {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: variables.$spacing-default;
   }
 
   .badge-in {

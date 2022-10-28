@@ -1,4 +1,4 @@
-@use "../scss/colors";
+@use "../scss/variables";
 
 :host {
   display: flex;
@@ -13,18 +13,6 @@
 
 #app-content {
   flex-grow: 1;
-  padding: 20px;
+  padding: variables.$spacing-medium;
   overflow: auto;
-}
-
-.app-content-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 600px;
-  margin-inline: auto;
-}
-
-.no-login {
-  text-align: center;
 }

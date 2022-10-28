@@ -1,19 +1,17 @@
-<ng-container *ngIf="!(isAuthenticated$ | async)">
-  <div class="no-login">
+<div class="app-content-inner">
+
+  <ng-container *ngIf="!(isAuthenticated$ | async)">
     <p>You have to be authenticated to use this app.
       <ob-login-with-google color="primary"></ob-login-with-google>
     </p>
-  </div>
-</ng-container>
+  </ng-container>
 
-<ng-container *ngIf="(isAuthenticated$ | async) && !(isAuthorized$ | async)">
-  <div class="no-login">
+  <ng-container *ngIf="(isAuthenticated$ | async) && !(isAuthorized$ | async)">
     <p>You are not authorized to use this app.</p>
-  </div>
-</ng-container>
+  </ng-container>
 
-<ng-container *ngIf="(isAuthorized$ | async)">
-  <div class="no-login">
+  <ng-container *ngIf="(isAuthorized$ | async)">
     <p>You are authorized to use this app. Go to <a routerLink="/home">HOME</a></p>
-  </div>
-</ng-container>
+  </ng-container>
+
+</div>

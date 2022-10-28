@@ -1,13 +1,14 @@
-<ob-spinner *ngIf="isLoading"></ob-spinner>
+<div class="app-content-inner">
+  <ob-spinner *ngIf="isLoading"></ob-spinner>
 
-<mat-card *ngIf="(badges$ | async) as badges">
-  <mat-card-title>Badge list</mat-card-title>
-  <mat-card-content>
-    <div class="badge-list">
+  <mat-card *ngIf="(badges$ | async) as badges">
+    <mat-card-title>Badge list</mat-card-title>
+    <mat-card-content>
+      <div class="badge-list">
 
-      <p *ngIf="!badges.length">No data</p>
+        <p *ngIf="!badges.length">No data</p>
 
-      <div class="badge-list-item" *ngFor="let badge of badges">
+        <div class="badge-list-item" *ngFor="let badge of badges">
 
             <span>
               <mat-icon *ngIf="badge.clock === 'in'" class="badge-in">login</mat-icon>
@@ -16,9 +17,9 @@
               <span *ngIf="badge.timestamp"><strong>{{ badge.timestamp | date:'dd/MM/yyyy HH:mm'}}</strong></span>
             </span>
 
-        <span>{{ badge.user.displayName || badge.user.email || badge.user.uid || 'No user info' }}</span>
+          <span>{{ badge.user.displayName || badge.user.email || badge.user.uid || 'No user info' }}</span>
 
-        <span>
+          <span>
               <button mat-icon-button color="warn" (click)="deleteBadgeItem(badge)">
                 <mat-icon>delete</mat-icon>
               </button>
@@ -27,7 +28,8 @@
               </button>
             </span>
 
+        </div>
       </div>
-    </div>
-  </mat-card-content>
-</mat-card>
+    </mat-card-content>
+  </mat-card>
+</div>

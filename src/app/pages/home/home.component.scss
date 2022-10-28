@@ -1,20 +1,21 @@
 @use "../../../scss/colors";
+@use "../../../scss/variables";
 
 :host {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: variables.$spacing-medium;
 }
 
 .nfc-badge-button {
-  margin-block: 20px;
+  margin-block: variables.$spacing-medium;
 }
 
 .new-badge-buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  padding-block: 20px;
+  padding-block: variables.$spacing-medium;
 }
 
 $nfc-badge-button-size: 120px;
