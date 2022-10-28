@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1666956245599,
+  "timestamp": 1666958820292,
   "index": "/office-buddy/index.html",
   "assetGroups": [
     {
@@ -14,11 +14,11 @@
         "/office-buddy/643.721772b469218396.js",
         "/office-buddy/favicon.ico",
         "/office-buddy/index.html",
-        "/office-buddy/main.0190743ee81f6478.js",
+        "/office-buddy/main.4e752dcdbcc6b25b.js",
         "/office-buddy/manifest.webmanifest",
         "/office-buddy/polyfills.7eefeb6c5068b57d.js",
         "/office-buddy/runtime.76b44cf9fb022eb4.js",
-        "/office-buddy/styles.98cfb322a100feff.css"
+        "/office-buddy/styles.d1a27baa8200658b.css"
       ],
       "patterns": []
     },
@@ -54,12 +54,12 @@
     "/office-buddy/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
     "/office-buddy/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
     "/office-buddy/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "/office-buddy/index.html": "d413922e431ee3733dbedd795129dc4491d72573",
-    "/office-buddy/main.0190743ee81f6478.js": "550b176ba75ca84254b5d855f7fe699adc59cef7",
+    "/office-buddy/index.html": "9c7bb865ddf06cc53419005e11464049959995fb",
+    "/office-buddy/main.4e752dcdbcc6b25b.js": "169e21c22ccf7c108c71b967eb8f05027de45479",
     "/office-buddy/manifest.webmanifest": "ba44fd71c49eb4511c689068992833ab64ea1ba0",
     "/office-buddy/polyfills.7eefeb6c5068b57d.js": "4bba1251f89b07ab032e299ee07c9e6050de8162",
     "/office-buddy/runtime.76b44cf9fb022eb4.js": "993b23adeaf8f8ced3cef0b39456c284db36e300",
-    "/office-buddy/styles.98cfb322a100feff.css": "98ba265c48dc6420b43dfff5a19da65932104761"
+    "/office-buddy/styles.d1a27baa8200658b.css": "805d6cd1a1aae604dc7e8c19a702c4fcd067f84f"
   },
   "navigationUrls": [
     {
