@@ -1,44 +1,90 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase, AngularFireList, SnapshotAction } from '@angular/fire/compat/database';
-import { Badge, BadgeWithKey } from '../models/badge.models';
-import { environment } from '../../environments/environment';
-import { map, Observable } from 'rxjs';
+import {
+  BadgeForm,
+  BadgeWithKey,
+  DbBadge, DbBadgeUser,
+  DbBadgeWithKey,
+} from '../models/badge.models';
+import { combineLatest, distinctUntilChanged, map, Observable, of, startWith, switchMap, withLatestFrom } from 'rxjs';
+import { DocumentReference, getDoc, Timestamp } from '@angular/fire/firestore';
+import {
+  AngularFirestore,
+  AngularFirestoreCollection,
+} from '@angular/fire/compat/firestore';
+import { DateService } from '../modules/shared/services/date.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BadgeApiService {
 
-  private badgesRef: AngularFireList<Badge> = this.db.list<Badge>(environment.firebaseApiUrls.badges, ref => ref.orderByChild('timestamp'));
+  private collection: AngularFirestoreCollection<DbBadge>;
 
-  constructor(private db: AngularFireDatabase) {
+  constructor(private db: AngularFirestore, private dateService: DateService) {
+    this.collection = db.collection<DbBadge>('badges');
   }
 
   ngOnInit() {
   }
 
-  getList(): Observable<BadgeWithKey[]> {
-    return this.badgesRef.snapshotChanges().pipe(
-      map((changes: SnapshotAction<Badge>[]) =>
-        changes.map((c: SnapshotAction<Badge>) => ({ key: c.payload.key, ...c.payload.val() } as BadgeWithKey))
+  getCollection(): Observable<BadgeWithKey[]> {
+    return this.collection.snapshotChanges().pipe(
+      distinctUntilChanged(),
+      map((changes) =>
+        changes.map((c) => ({ key: c.payload.doc.id, ...c.payload.doc.data() }) as DbBadgeWithKey)
+      ),
+      switchMap((badges) => {
+          if(!badges.length) {
+            return of([]);
+          }
+          return combineLatest(
+            badges.map(async badge => {
+              if(!badge.user) {
+                return {
+                  ...badge,
+                  timestamp: (badge.timestamp as Timestamp)?.toDate().toISOString(),
+                } as BadgeWithKey;
+              }
+
+              const userRef = await getDoc<DbBadgeUser>(badge.user as DocumentReference<DbBadgeUser>);
+              const user = userRef.data();
+              return {
+                ...badge,
+                timestamp: (badge.timestamp as Timestamp)?.toDate().toISOString(),
+                user: {
+                  uid: userRef.id,
+                  ...user
+                }
+              } as BadgeWithKey;
+            })
+          );
+        }
       )
     );
   }
 
-  getByKey(key: BadgeWithKey['key']) {
-    throw 'Unsupported method';
+  async create(badge: BadgeForm) {
+    if(!badge?.userId) {
+      return;
+    }
+
+    const userRef = this.db.doc<DbBadgeUser>(`users/${ badge.userId }`).ref;
+    return this.collection.add({
+      clock: badge.clock,
+      timestamp: this.dateService.isoToJsDate(badge.timestamp) ?? new Date(),
+      user: userRef as unknown as DbBadge['user']
+    });
   }
 
-  create(badge: Badge) {
-    return this.badgesRef.push(badge);
+  async update(key: BadgeWithKey['key'], badge: BadgeForm) {
+    return this.collection.doc(key).update({
+      clock: badge.clock,
+      timestamp: this.dateService.isoToJsDate(badge.timestamp) ?? new Date(),
+    });
   }
 
-  update(key: BadgeWithKey['key'], badge: Badge) {
-    return this.badgesRef.set(key, badge);
-  }
-
-  deleteByKey(key: BadgeWithKey["key"]) {
-    return this.badgesRef.remove(key);
+  deleteByKey(key: BadgeWithKey['key']) {
+    return this.collection.doc(key).delete();
   }
 
 }

@@ -1,22 +1,10 @@
 <form [formGroup]="badgeForm" (submit)="submit()">
   <div class="fields">
-    <ng-container formGroupName="user">
-      <mat-form-field appearance="outline" class="field-user-uid">
-        <mat-label>uid</mat-label>
-        <input matInput formControlName="uid" required>
-      </mat-form-field>
 
-      <mat-form-field appearance="outline" class="field-user-email">
-        <mat-label>email</mat-label>
-        <input matInput formControlName="email" required>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="field-user-name">
-        <mat-label>name</mat-label>
-        <input matInput formControlName="displayName" required>
-      </mat-form-field>
-    </ng-container>
-
+    <mat-form-field appearance="outline" class="field-user-uid">
+      <mat-label>user id</mat-label>
+      <input matInput formControlName="userId" required>
+    </mat-form-field>
 
     <mat-form-field appearance="outline" class="field-clock">
       <mat-label>clock</mat-label>

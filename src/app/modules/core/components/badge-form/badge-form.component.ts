@@ -18,15 +18,14 @@ export class BadgeFormComponent implements OnInit, OnChanges {
   };
 
   @Output()
-  formSubmitted = new EventEmitter<Badge>();
+  formSubmitted = new EventEmitter<BadgeForm>();
 
   badgeForm: FormGroup = new FormGroup({
     clock: new FormControl(this.badge?.clock),
     timestamp: new FormControl(this.badge?.timestamp),
-    user: new FormGroup({
-      uid: new FormControl(this.badge?.user?.uid),
-      email: new FormControl(this.badge?.user?.email),
-      displayName: new FormControl(this.badge?.user?.displayName),
+    userId: new FormControl({
+      value: this.badge?.userId,
+      disabled: true
     })
   });
 
@@ -47,8 +46,8 @@ export class BadgeFormComponent implements OnInit, OnChanges {
     if(this.badgeForm.invalid) {
       return;
     }
-    const badge: Badge = {
-      ...this.badgeForm.value,
+    const badge: BadgeForm = {
+      ...this.badgeForm.getRawValue(),
       timestamp: this.dateService.htmlToIso(this.badgeForm.value.timestamp)
     };
     this.formSubmitted.emit(badge);

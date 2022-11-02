@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit {
         this.user = { uid, email, displayName };
         this.newBadge = {
           ...this.newBadge,
-          user: this.user
+          userId: this.user.uid
         };
 
       }),
@@ -91,17 +91,16 @@ export class HomeComponent implements OnInit {
       clock,
       timestamp: new Date().toISOString()
     };
-    // this.badgesRef.push(badge);
     this.addBadgeItem(badge);
   }
 
-  addBadgeItem(badge: Badge) {
+  addBadgeItem(badge: BadgeForm) {
     this.badgeApiService.create(badge).then(() => {
-      console.debug('Updated', badge);
+      console.debug('Created', badge);
       this.confirmDialog.open({
-        html: `<div><label>Email:</label> ${ badge.user.email }</div>
+        html: `<div><label>User ID:</label> ${ badge.userId }</div>
 <div><label>Clock:</label> ${ badge.clock }</div>
-<div><label>Time:</label> ${ this.dateService.isoToHumanDate(badge.timestamp) }</div>`,
+<div><label>Time:</label> ${ badge.timestamp ? this.dateService.isoToHumanDate(badge.timestamp) : '' }</div>`,
         confirmText: 'Ok',
         title: 'Badge sent',
       });
