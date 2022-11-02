@@ -22,6 +22,8 @@ import { BadgeListComponent } from './pages/badge-list/badge-list.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { LoginComponent } from './pages/login/login.component';
+import { GoogleSpreadsheetApiService } from './api/google-spreadsheet-api.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { LoginComponent } from './pages/login/login.component';
     // ANGULAR
     BrowserModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
     // SERVICE WORKER
     ServiceWorkerModule.register('ngsw-worker.js', {
@@ -63,6 +66,7 @@ import { LoginComponent } from './pages/login/login.component';
     NfcService,
     ScreenTrackingService,
     UserTrackingService,
+    GoogleSpreadsheetApiService,
   ],
   bootstrap: [AppComponent]
 })

@@ -8,6 +8,7 @@ import { DatePipe } from '@angular/common';
 import { AuthService } from '../../modules/core/services/auth.service';
 import { ConfirmDialogService } from '../../modules/shared/components/dialog/confirm-dialog.service';
 import { DateService } from '../../modules/shared/services/date.service';
+import { GoogleSpreadsheetApiService } from '../../api/google-spreadsheet-api.service';
 
 @Component({
   selector: 'ob-home',
@@ -39,11 +40,19 @@ export class HomeComponent implements OnInit {
     private badgeApiService: BadgeApiService,
     private datePipe: DatePipe,
     private dateService: DateService,
-    private confirmDialog: ConfirmDialogService
+    private confirmDialog: ConfirmDialogService,
+    private sheetService: GoogleSpreadsheetApiService,
   ) {
   }
 
   ngOnInit(): void {
+
+    this.sheetService.get({
+      spreadsheetId: '1Zgjl_ixcBFuyzbuaCZqeLBKXoDGwlhXvFcGtgzN8GPE',
+      range: 'badges'
+    }).subscribe(res => console.log({ badges: res }));
+
+
     void this.nfcService.init();
 
     this.nfcService.readRunningState$.subscribe(state => {

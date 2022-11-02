@@ -3,7 +3,7 @@ import { GoogleAuthProvider } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserApiService } from '../../../api/user-api.service';
 import { AuthUser, FirebaseUser } from '../../../models/auth.models';
-import { BehaviorSubject, filter, map, tap } from 'rxjs';
+import { BehaviorSubject, filter, map, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -17,6 +17,10 @@ export class AuthService {
   public isAdmin$ = this.user$.pipe(map(u => !!u?.isAdmin));
   public isAuthorized$ = this.user$.pipe(map(u => !!u?.isAuthorized));
   public isAuthenticated$ = this.user$.pipe(map(u => !!u));
+  public accessToken$ = this.angularFireAuth.authState.pipe(
+    filter(user => !!user),
+    switchMap(async user => await user!.getIdToken())
+  );
 
   constructor(
     private angularFireAuth: AngularFireAuth,
@@ -24,6 +28,8 @@ export class AuthService {
     private router: Router,
   ) {
     this.angularFireAuth.authState.pipe(filter(user => !!user)).subscribe(user => this.retrieveUserInfo(user as FirebaseUser));
+
+
   }
 
   login() {
