@@ -22,6 +22,8 @@ import { BadgeListComponent } from './pages/badge-list/badge-list.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
 import { LoginComponent } from './pages/login/login.component';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 
 @NgModule({
   declarations: [
@@ -47,6 +49,8 @@ import { LoginComponent } from './pages/login/login.component';
     }),
     // FIREBASE
     AngularFireModule.initializeApp(environment.firebase),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
     AngularFireAnalyticsModule,
     AngularFireAuthModule,
     BrowserAnimationsModule,

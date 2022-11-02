@@ -25,6 +25,14 @@ export class DateService {
     return this.datePipe.transform(new Date(isoDate), environment.formatter.badgeIsoDateTime) || undefined;
   }
 
+  isoToJsDate(isoDate?: string) {
+    if(!isoDate) {
+      return;
+    }
+    const d = this.datePipe.transform(new Date(isoDate), environment.formatter.badgeIsoDateTime) || undefined;
+    return d ? new Date(d) : undefined;
+  }
+
   htmlToIso(htmlDate: string) {
     return new Date(htmlDate + ':00.000').toISOString();
   }

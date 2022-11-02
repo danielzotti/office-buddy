@@ -92,7 +92,11 @@ export class NfcService {
     this.readRunningState$.next('stopped');
   }
 
-  async startWrite(text: string) {
+  async startWrite(text?: string) {
+    if(!text) {
+      console.error('[NfcService] cannot write an empty text');
+      return;
+    }
     this.stopRead();
     this.abortController = new AbortController();
     this.ndef = new NDEFReader();

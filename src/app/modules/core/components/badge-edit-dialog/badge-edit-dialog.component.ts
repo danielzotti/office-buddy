@@ -10,21 +10,16 @@ import { DateService } from '../../../shared/services/date.service';
 export class BadgeEditDialogComponent implements OnInit {
 
   @Input()
-  badge: BadgeWithKey | undefined;
-
   badgeForm: BadgeForm | undefined;
 
   @Output()
-  formSubmitted = new EventEmitter<Badge>();
+  formSubmitted = new EventEmitter<BadgeForm>();
 
-  constructor(private dateService: DateService) {
+  constructor() {
   }
 
   ngOnInit(): void {
-    this.badgeForm = {
-      ...this.badge,
-      timestamp: this.dateService.isoToHtmlDate(this.badge?.timestamp)
-    };
+
   }
 
 }
