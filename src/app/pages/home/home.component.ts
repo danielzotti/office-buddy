@@ -8,6 +8,7 @@ import { DatePipe } from '@angular/common';
 import { AuthService } from '../../modules/core/services/auth.service';
 import { ConfirmDialogService } from '../../modules/shared/components/dialog/confirm-dialog.service';
 import { DateService } from '../../modules/shared/services/date.service';
+import { UserApiService } from '../../api/user-api.service';
 
 @Component({
   selector: 'ob-home',
@@ -37,6 +38,7 @@ export class HomeComponent implements OnInit {
     private auth: AuthService,
     private nfcService: NfcService,
     private badgeApiService: BadgeApiService,
+    private userApiService: UserApiService,
     private datePipe: DatePipe,
     private dateService: DateService,
     private confirmDialog: ConfirmDialogService
@@ -81,13 +83,13 @@ export class HomeComponent implements OnInit {
     this.doBadge('out');
   }
 
-  doBadge(clock: Badge['clock']) {
+  doBadge(clock: BadgeForm['clock']) {
     if(!this.user) {
       alert(`No username to use for badge ${ clock }`);
       return;
     }
-    const badge: Badge = {
-      user: this.user,
+    const badge: BadgeForm = {
+      userId: this.user.uid,
       clock,
       timestamp: new Date().toISOString()
     };

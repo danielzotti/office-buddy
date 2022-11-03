@@ -3,7 +3,16 @@ import { GoogleAuthProvider } from '@angular/fire/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserApiService } from '../../../api/user-api.service';
 import { AuthUser, FirebaseUser } from '../../../models/auth.models';
-import { BehaviorSubject, filter, map, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  distinct,
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  filter,
+  map,
+  share,
+  tap
+} from 'rxjs';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -14,9 +23,18 @@ export class AuthService {
   private userSubject = new BehaviorSubject<AuthUser | null>(null);
   public user$ = this.userSubject.asObservable();
 
-  public isAdmin$ = this.user$.pipe(map(u => !!u?.isAdmin));
-  public isAuthorized$ = this.user$.pipe(map(u => !!u?.isAuthorized));
-  public isAuthenticated$ = this.user$.pipe(map(u => !!u));
+  public isAdmin$ = this.user$.pipe(
+    map(u => !!u?.isAdmin),
+    distinctUntilChanged(),
+  );
+  public isAuthorized$ = this.user$.pipe(
+    map(u => !!u?.isAuthorized),
+    distinctUntilChanged(),
+  );
+  public isAuthenticated$ = this.user$.pipe(
+    map(u => !!u),
+    distinctUntilChanged(),
+  );
 
   constructor(
     private angularFireAuth: AngularFireAuth,
@@ -60,7 +78,7 @@ export class AuthService {
     const { uid, email, displayName } = user;
     const userInfoBase = { uid, email, displayName, isAdmin: false, isAuthorized: false };
     this.setUserInfo(userInfoBase);
-    this.userApiService.getByKey(user.uid)?.valueChanges().subscribe({
+    this.userApiService.getByKey(user.uid).subscribe({
         next: authorizedUser => {
           console.debug('[AuthService retrieveUserInfo OK]', { ...userInfoBase, isAdmin: authorizedUser?.isAdmin });
           this.setUserInfo({ ...userInfoBase, isAdmin: authorizedUser?.isAdmin, isAuthorized: !!authorizedUser });

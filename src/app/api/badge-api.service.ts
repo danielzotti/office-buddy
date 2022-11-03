@@ -3,46 +3,46 @@ import {
   BadgeForm,
   BadgeWithKey,
   DbBadge, DbBadgeUser,
-  DbBadgeWithKey,
 } from '../models/badge.models';
-import { combineLatest, distinctUntilChanged, map, Observable, of, startWith, switchMap, withLatestFrom } from 'rxjs';
+import { combineLatest, Observable, of, switchMap } from 'rxjs';
 import { DocumentReference, getDoc, Timestamp } from '@angular/fire/firestore';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
 } from '@angular/fire/compat/firestore';
 import { DateService } from '../modules/shared/services/date.service';
+import { environment } from '../../environments/environment';
+import { FirebaseHelperService } from '../modules/shared/services/firebase-helper.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BadgeApiService {
 
-  private collection: AngularFirestoreCollection<DbBadge>;
+  private badges: AngularFirestoreCollection<DbBadge> = this.db.collection<DbBadge>(environment.firebaseApiUrls.badges);
 
-  constructor(private db: AngularFirestore, private dateService: DateService) {
-    this.collection = db.collection<DbBadge>('badges');
+  constructor(
+    private db: AngularFirestore,
+    private dateService: DateService,
+    private firebaseHelper: FirebaseHelperService,
+  ) {
   }
 
   ngOnInit() {
   }
 
   getCollection(): Observable<BadgeWithKey[]> {
-    return this.collection.snapshotChanges().pipe(
-      distinctUntilChanged(),
-      map((changes) =>
-        changes.map((c) => ({ key: c.payload.doc.id, ...c.payload.doc.data() }) as DbBadgeWithKey)
-      ),
+    return this.firebaseHelper.collectionWithKey<DbBadge>(this.badges).pipe(
       switchMap((badges) => {
           if(!badges.length) {
             return of([]);
           }
           return combineLatest(
             badges.map(async badge => {
-              if(!badge.user) {
+              if(!badge?.user) {
                 return {
                   ...badge,
-                  timestamp: (badge.timestamp as Timestamp)?.toDate().toISOString(),
+                  timestamp: (badge?.timestamp as Timestamp)?.toDate().toISOString(),
                 } as BadgeWithKey;
               }
 
@@ -68,8 +68,8 @@ export class BadgeApiService {
       return;
     }
 
-    const userRef = this.db.doc<DbBadgeUser>(`users/${ badge.userId }`).ref;
-    return this.collection.add({
+    const userRef = this.db.doc<DbBadgeUser>(`${ environment.firebaseApiUrls.users }/${ badge.userId }`).ref;
+    return this.badges.add({
       clock: badge.clock,
       timestamp: this.dateService.isoToJsDate(badge.timestamp) ?? new Date(),
       user: userRef as unknown as DbBadge['user']
@@ -77,14 +77,14 @@ export class BadgeApiService {
   }
 
   async update(key: BadgeWithKey['key'], badge: BadgeForm) {
-    return this.collection.doc(key).update({
+    return this.badges.doc(key).update({
       clock: badge.clock,
       timestamp: this.dateService.isoToJsDate(badge.timestamp) ?? new Date(),
     });
   }
 
   deleteByKey(key: BadgeWithKey['key']) {
-    return this.collection.doc(key).delete();
+    return this.badges.doc(key).delete();
   }
 
 }

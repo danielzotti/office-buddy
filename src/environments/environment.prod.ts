@@ -14,8 +14,8 @@ export const environment = {
     databaseURL: 'https://office-buddy-trieste-default-rtdb.europe-west1.firebasedatabase.app/'
   },
   firebaseApiUrls: {
-    badges: '/badges',
-    users: '/users',
+    badges: 'badges',
+    users: 'users',
   },
   formatter: {
     shortDate: '',

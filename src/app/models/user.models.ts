@@ -1,9 +1,13 @@
-export interface User {
+export interface DbUser {
   email?: string;
   displayName?: string;
   isAdmin?: boolean;
 }
 
-export interface UserWithKey extends User {
+export type DbUserWithKey = DbUser & {
   key: string;
 }
+
+export type User = DbUser;
+export type UserWithKey = DbUserWithKey;
+
