@@ -8,7 +8,7 @@ It has been created just to play with some cool technologies:
 - Angular Material
 - Angularfire
 - Angular PWA
-- Firebase Realtime Database
+- Firebase Firestore Database ~~Realtime Database~~
 - Permission API
 - NFC Browser API
 - Android device remote debugging
@@ -45,12 +45,13 @@ It has been created just to play with some cool technologies:
 - [NFC examples (Web.dev)](https://web.dev/nfc/#check-for-permission)
 
 ## Todo
+- Fix login/logout redirect
 - ~~PWA: Manage app version with packages.json~~
 - ~~PWA: Check for updates~~
 - Router
-  - Home with 2 buttons (in/out) + NFC capability
+  ~~- Home with 2 buttons (in/out) + NFC capability~~
+  ~~- Badges list page~~
   - Users list page
-  - Badges list page
   - User profile page
 - Manage users
   - CRUD (for the creation the `uid` is needed, and `uid` is created after the first login)
