@@ -19,7 +19,7 @@ import { FirebaseHelperService } from '../modules/shared/services/firebase-helpe
 })
 export class BadgeApiService {
 
-  private badges: AngularFirestoreCollection<DbBadge> = this.db.collection<DbBadge>(environment.firebaseApiUrls.badges);
+  private badges: AngularFirestoreCollection<DbBadge> = this.db.collection<DbBadge>(environment.firebaseApiUrls.badges, ref => ref.orderBy("timestamp", "desc"));
 
   constructor(
     private db: AngularFirestore,
