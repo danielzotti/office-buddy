@@ -1,17 +1,14 @@
-import { DocumentReference, Timestamp } from '@angular/fire/firestore';
+import { Timestamp } from '@angular/fire/firestore';
 
 export interface DbBadge {
   clock?: 'in' | 'out';
   timestamp?: Timestamp | Date;
-  user?: DocumentReference<DbBadgeUser>;
+  userId: string;
+  key?: string;
 }
 
-export type DbBadgeWithKey = DbBadge & {
-  key: string;
-};
-
 export interface DbBadgeUser {
-  uid: string;
+  key?: string;
   email: string | null;
   displayName: string | null;
 }
@@ -23,12 +20,8 @@ export type Badge = Omit<DbBadge, 'user' | 'timestamp'> & {
   user?: BadgeUser;
 }
 
-export type BadgeWithKey = Badge & {
-  key: string;
-}
-
 export type BadgeForm = Partial<{
   clock: DbBadge["clock"];
-  userId: DbBadgeUser["uid"];
+  userId: string;
   timestamp: string;
 }>

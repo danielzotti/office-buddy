@@ -5,13 +5,9 @@ import { UserApiService } from '../../../api/user-api.service';
 import { AuthUser, FirebaseUser } from '../../../models/auth.models';
 import {
   BehaviorSubject,
-  distinct,
   distinctUntilChanged,
-  distinctUntilKeyChanged,
   filter,
   map,
-  share,
-  tap
 } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -23,6 +19,10 @@ export class AuthService {
   private userSubject = new BehaviorSubject<AuthUser | null>(null);
   public user$ = this.userSubject.asObservable();
 
+  public userId$ = this.user$.pipe(
+    map(u => u?.uid),
+    distinctUntilChanged(),
+  );
   public isAdmin$ = this.user$.pipe(
     map(u => !!u?.isAdmin),
     distinctUntilChanged(),

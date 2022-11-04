@@ -1,9 +1,35 @@
 <div class="app-content-inner">
-  <mat-card>
-    <mat-card-title>User list</mat-card-title>
+  <ob-spinner *ngIf="isLoading"></ob-spinner>
+
+  <mat-card *ngIf="(users$ | async) as users">
+    <mat-card-title>Users list</mat-card-title>
     <mat-card-content>
-      <pre>{{ users | json }}</pre>
+      <div class="user-list">
+
+        <p class="user-list-item" *ngIf="!users.length">No data</p>
+
+        <div class="user-list-item" *ngFor="let user of users" title="{{ user.key }}}">
+
+          <span>
+            <mat-icon *ngIf="user.isAdmin">verified_user</mat-icon>
+            <mat-icon *ngIf="!user.isAdmin">person</mat-icon>
+            <strong>{{ user.displayName }}</strong>
+            <span>
+              {{ user.email }}
+            </span>
+          </span>
+
+          <span>
+            <button mat-icon-button color="warn" (click)="deleteUser(user)">
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button mat-icon-button color="primary" (click)="openUpdateUserModal(user)">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </span>
+
+        </div>
+      </div>
     </mat-card-content>
   </mat-card>
-
 </div>

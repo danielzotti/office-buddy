@@ -9,6 +9,7 @@ import { AuthService } from '../../modules/core/services/auth.service';
 import { ConfirmDialogService } from '../../modules/shared/components/dialog/confirm-dialog.service';
 import { DateService } from '../../modules/shared/services/date.service';
 import { UserApiService } from '../../api/user-api.service';
+import { AuthUser } from '../../models/auth.models';
 
 @Component({
   selector: 'ob-home',
@@ -18,7 +19,7 @@ import { UserApiService } from '../../api/user-api.service';
 export class HomeComponent implements OnInit {
 
   // AUTH
-  user: BadgeUser | undefined;
+  user: AuthUser | undefined;
 
   // NFC
   hasNfcCapability$ = this.nfcService.hasNfcCapability$;
@@ -64,7 +65,7 @@ export class HomeComponent implements OnInit {
     this.auth.user$.pipe(
       filter((user) => !!user),
       tap((user) => {
-        const { uid, email, displayName } = user as BadgeUser;
+        const { uid, email, displayName } = user as AuthUser;
         this.user = { uid, email, displayName };
         this.newBadge = {
           ...this.newBadge,

@@ -1,40 +1,33 @@
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { AngularFirestoreCollection, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
+import { environment } from '../../../../environments/environment';
 
-export type WithKey<T> = T & { key: string }
+interface Options {
+  debounceMs: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseHelperService {
 
+  debounceTime = environment.defaults.debounceTime;
+
   constructor() {
   }
 
-  collectionWithKey<T>(collection: AngularFirestoreCollection<T>) {
-    return collection.snapshotChanges().pipe(
-      map((changes) =>
-        changes.map((c) => {
-          const data = c.payload.doc.data();
-          if(!data) {
-            return null;
-          }
-          return { key: c.payload.doc.id, ...data } as WithKey<T>;
-        }).filter(data => !!data)
-      )
+  collection<T>(collection: AngularFirestoreCollection<T>, { debounceMs }: Options = { debounceMs: this.debounceTime} ) {
+    return collection.valueChanges({ idField: 'key' }).pipe(
+      distinctUntilChanged(),
+      debounceTime(debounceMs)
     );
   }
 
-  docWithKey<T>(doc: AngularFirestoreDocument<T>) {
-    return doc.snapshotChanges().pipe(
-      map((change) => {
-        const data = change.payload.data();
-        if(!data) {
-          return null;
-        }
-        return { key: change.payload.id, ...data } as WithKey<T>;
-      })
+  doc<T>(doc: AngularFirestoreDocument<T>, { debounceMs }: Options = { debounceMs: this.debounceTime}) {
+    return doc.valueChanges({ idField: 'key' }).pipe(
+      distinctUntilChanged(),
+      debounceTime(debounceMs)
     );
   }
 }

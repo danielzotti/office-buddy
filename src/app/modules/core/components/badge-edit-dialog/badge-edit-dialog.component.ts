@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Badge, BadgeForm, BadgeWithKey } from '../../../../models/badge.models';
-import { DateService } from '../../../shared/services/date.service';
+import { BadgeForm } from '../../../../models/badge.models';
 
 @Component({
   selector: 'ob-badge-edit-dialog',

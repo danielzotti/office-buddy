@@ -1,0 +1,29 @@
+@use "../../../scss/colors";
+@use "../../../scss/variables";
+
+.user-list {
+  .mat-mini-fab {
+    margin-left: variables.$spacing-small;
+    margin-right: variables.$spacing-small;
+  }
+}
+
+.user-list-item {
+  padding: variables.$spacing-default;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: variables.$spacing-default;
+  align-items: center;
+  justify-content: space-between;
+
+  &:nth-of-type(2n) {
+    background-color: colors.$lightgray;
+  }
+
+  > span {
+    display: flex;
+    align-items: flex-start;
+    gap: variables.$spacing-default;
+  }
+}

@@ -18,7 +18,7 @@ export class IsAuthorizedGuard implements CanActivate {
       map(isAuthorized => isAuthorized),
       tap((isAuthorized) => {
         if(!isAuthorized) {
-          void this.router.navigate(['/login']);
+          void this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
         }
       }),
     );

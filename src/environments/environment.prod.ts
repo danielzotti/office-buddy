@@ -17,6 +17,9 @@ export const environment = {
     badges: 'badges',
     users: 'users',
   },
+  defaults: {
+    debounceTime: 100,
+  },
   formatter: {
     shortDate: '',
     longDate: '',

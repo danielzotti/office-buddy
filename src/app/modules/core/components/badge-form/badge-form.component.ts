@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DatePipe } from '@angular/common';
-import { Badge, BadgeForm, BadgeWithKey } from '../../../../models/badge.models';
+import { BadgeForm } from '../../../../models/badge.models';
 import { DateService } from '../../../shared/services/date.service';
 
 @Component({
