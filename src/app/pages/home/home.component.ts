@@ -109,7 +109,8 @@ export class HomeComponent implements OnInit {
         confirmText: 'Ok',
         title: 'Badge sent',
       });
-    });
+    })
+      .catch(err => console.error('[Home] error on adding badge item', err));
   }
 
   startNfcScan() {

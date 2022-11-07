@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, tap } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +20,8 @@ export class NfcService {
   messagesSubject = new Subject<any>();
 
   public messages$ = this.messagesSubject.asObservable().pipe(
+    distinctUntilChanged(),
+    debounceTime(500),
     tap(message => console.log({ nfcMessage: message }))
   );
 
