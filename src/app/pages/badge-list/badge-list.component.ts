@@ -62,7 +62,7 @@ export class BadgeListComponent implements OnInit {
   }
 
   deleteBadgeItem(badge: Badge) {
-    const canDelete = confirm(`Are you sure to delete badge by ${ badge.user?.email }
+    const canDelete = confirm(`Are you sure to delete badge
 ${ badge.clock?.toUpperCase() }: ${ this.dateService.isoToHumanDate(badge.timestamp) }?`);
 
     if(canDelete && badge.key) {
@@ -77,7 +77,7 @@ ${ badge.clock?.toUpperCase() }: ${ this.dateService.isoToHumanDate(badge.timest
     });
 
     dialogRef.componentInstance.badgeForm = {
-      userId: badge.user?.key,
+      userId: badge.userId,
       clock: badge.clock,
       timestamp: this.dateService.isoToHtmlDate(badge?.timestamp)
     };

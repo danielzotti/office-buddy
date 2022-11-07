@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,11 @@ export class NfcService {
   permissionState$ = new BehaviorSubject<PermissionState>('denied');
   readRunningState$ = new BehaviorSubject<'started' | 'stopped'>('stopped');
   writeRunningState$ = new BehaviorSubject<'started' | 'stopped'>('stopped');
-  messages$ = new Subject<any>();
+  messagesSubject = new Subject<any>();
+
+  public messages$ = this.messagesSubject.asObservable().pipe(
+    tap(message => console.log({ nfcMessage: message }))
+  );
 
   constructor() {
   }
@@ -73,7 +77,7 @@ export class NfcService {
         console.debug('[NfcService] NDEF message read.', event);
         const decoder = new TextDecoder();
         for(const record of event.message.records) {
-          this.messages$.next({
+          this.messagesSubject.next({
             recordType: record.recordType,
             mediaType: record.mediaType,
             data: decoder.decode(record.data)

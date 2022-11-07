@@ -58,7 +58,9 @@ export class HomeComponent implements OnInit {
     this.nfcService.permissionState$.subscribe(state => {
       this.nfcPermissionState = state;
     });
-    this.nfcMessages$.subscribe(message => {
+    this.nfcMessages$.pipe(
+      tap(message => console.log({ nfcMessage: message }))
+    ).subscribe(message => {
       this.doBadge(message.data);
     });
 
