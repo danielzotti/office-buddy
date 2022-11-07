@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Badge, BadgeForm, BadgeUser } from '../../models/badge.models';
 import { NfcService } from '../../modules/shared/services/nfc.service';
 import { BadgeApiService } from '../../api/badge-api.service';
-import { filter, tap } from 'rxjs';
+import { filter, tap, throttleTime } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../modules/core/services/auth.service';
@@ -59,7 +59,9 @@ export class HomeComponent implements OnInit {
       this.nfcPermissionState = state;
     });
     this.nfcMessages$.pipe(
-      tap(message => console.log({ nfcMessage: message }))
+      tap(message => console.log({ nfcMessage_PRE: message })),
+      throttleTime(500),
+      tap(message => console.log({ nfcMessage_post: message }))
     ).subscribe(message => {
       this.doBadge(message.data);
     });

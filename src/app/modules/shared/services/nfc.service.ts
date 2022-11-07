@@ -25,7 +25,6 @@ export class NfcService {
   public messages$ = this.messagesSubject.asObservable().pipe(
     tap(message => console.log({ nfcMessagePRE: message })),
     throttleTime(500),
-    distinctUntilKeyChanged('timestamp', (x, y) => x === y),
     tap(message => console.log({ nfcMessagePOST: message }))
   );
 
