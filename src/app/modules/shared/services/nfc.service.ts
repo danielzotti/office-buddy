@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  debounceTime,
+  distinctUntilChanged,
+  distinctUntilKeyChanged,
+  Subject,
+  tap,
+  throttleTime
+} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -7,22 +15,18 @@ import { BehaviorSubject, debounceTime, distinctUntilChanged, Subject, tap } fro
 export class NfcService {
 
   private ndef: NDEFReader | undefined;
-  // private ndefRead: NDEFReader | undefined;
-  // private ndefWrite: NDEFReader | undefined;
-  // private readAbortController = new AbortController();
-  // private writeAbortController = new AbortController();
   private abortController = new AbortController();
+  private messagesSubject = new Subject<any>();
 
-  hasNfcCapability$ = new BehaviorSubject<boolean>(false);
-  permissionState$ = new BehaviorSubject<PermissionState>('denied');
-  readRunningState$ = new BehaviorSubject<'started' | 'stopped'>('stopped');
-  writeRunningState$ = new BehaviorSubject<'started' | 'stopped'>('stopped');
-  messagesSubject = new Subject<any>();
-
+  public hasNfcCapability$ = new BehaviorSubject<boolean>(false);
+  public permissionState$ = new BehaviorSubject<PermissionState>('denied');
+  public readRunningState$ = new BehaviorSubject<'started' | 'stopped'>('stopped');
+  public writeRunningState$ = new BehaviorSubject<'started' | 'stopped'>('stopped');
   public messages$ = this.messagesSubject.asObservable().pipe(
-    distinctUntilChanged(),
-    debounceTime(500),
-    tap(message => console.log({ nfcMessage: message }))
+    tap(message => console.log({ nfcMessagePRE: message })),
+    throttleTime(500),
+    distinctUntilKeyChanged('timestamp', (x, y) => x === y),
+    tap(message => console.log({ nfcMessagePOST: message }))
   );
 
   constructor() {
