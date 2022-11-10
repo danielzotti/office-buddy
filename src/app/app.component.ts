@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppCheckUpdateService } from './modules/shared/services/app-check-update.service';
 import { AuthService } from './modules/core/services/auth.service';
-import { AuthUser } from './models/auth.models';
 
 @Component({
   selector: 'ob-root',

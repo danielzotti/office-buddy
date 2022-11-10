@@ -15,4 +15,5 @@
   flex-grow: 1;
   padding: variables.$spacing-medium;
   overflow: auto;
+  padding-bottom: 100px; // Fix mobile overflow
 }

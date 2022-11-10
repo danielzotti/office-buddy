@@ -20,16 +20,16 @@ It has been created just to play with some cool technologies:
 
 ## Test NFC feature on your smartphone
 
-- `npm run start:public` aka `ng serve --host 0.0.0.0 --ssl` on your local machine:
-    - `--host 0.0.0.0`: same network (e.g. your local machine IP might be 192.168.1.2)
-    - `--ssl`: NFC works only through `https`
-    - NB: if your local machine is behind a firewall, you might have to change some configurations depending on your
-      firewall/machine/...
+- `npm run start` aka `ng serve` on your local machine:
 - Connect your smartphone to your local machine through USB
     - grant permissions on the smartphone
-- Browse `https://192.168.1.2:4200` on your smartphone
 - Open chrome debug `chrome://inspect/#devices` on your local machine
-- Select `inspect` under the `https://192.168.1.2:4200` item in the list
+- Click on `Port forwarding...` button and add a new record:
+  - Port: `4200`
+  - IP address and port: `localhost:4200`
+  - Check `Enable port forwarding` and click `Done`
+- Browse `https://localhost:4200` on your smartphone
+- Select `inspect` under the `https://localhost:4200` item in the list
 
 ## Deploy
 
@@ -45,18 +45,20 @@ It has been created just to play with some cool technologies:
 - [NFC examples (Web.dev)](https://web.dev/nfc/#check-for-permission)
 
 ## Todo
-- Fix login/logout redirect
+- Manage badge as a single day (in + out)
+- Send notifications to colleagues after badge
+- Fix
+  ~~- login/logout redirect~~
+  ~~- Every user should manage their badges only~~
 - ~~PWA: Manage app version with packages.json~~
 - ~~PWA: Check for updates~~
 - Router
+  - User profile page
   ~~- Home with 2 buttons (in/out) + NFC capability~~
   ~~- Badges list page~~
-  - Users list page
-  - User profile page
+  ~~- Users list page~~
 - Manage users
   - CRUD (for the creation the `uid` is needed, and `uid` is created after the first login)
   - Authorization (simple or admin)
-- Every user should manage their badges only
-- Send notifications to colleagues after badge
 - Use Google Spreadsheet to store just badges data in order to do some analysis
 - ...more

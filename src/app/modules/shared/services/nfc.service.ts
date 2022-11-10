@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
   BehaviorSubject,
-  debounceTime,
-  distinctUntilChanged,
-  distinctUntilKeyChanged,
   Subject,
   tap,
   throttleTime
@@ -35,6 +32,7 @@ export class NfcService {
 
     if('NDEFReader' in window) {
       console.debug('[NfcService] This browser has NFC capability! <3');
+
       this.hasNfcCapability$.next(true);
 
       const nfcPermissionStatus = await navigator.permissions.query({ name: 'nfc' } as unknown as PermissionDescriptor);
@@ -51,7 +49,9 @@ export class NfcService {
 
       if(nfcPermissionStatus.state === 'granted') {
         console.debug('[NfcService] The user has granted the NFC permission');
-        void this.startRead();
+        if(this.readRunningState$.value !== 'started') {
+          void this.startRead();
+        }
       } else if(nfcPermissionStatus.state === 'prompt') {
         console.debug('[NfcService] The user should be asked to grant the NFC permission');
       } else {

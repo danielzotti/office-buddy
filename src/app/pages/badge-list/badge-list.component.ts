@@ -5,7 +5,9 @@ import {
   filter,
   Observable,
   of,
+  Subject,
   switchMap,
+  takeUntil,
   tap,
 } from 'rxjs';
 import {
@@ -30,6 +32,8 @@ export class BadgeListComponent implements OnInit {
   // BADGES
   badges$: Observable<Badge[]> | undefined;
 
+  private destroySubject = new Subject<void>();
+
   constructor(private badgeApiService: BadgeApiService,
               private dateService: DateService,
               private auth: AuthService,
@@ -49,16 +53,12 @@ export class BadgeListComponent implements OnInit {
           })
         )
       ),
-      /* switchMap(() => this.badgeApiService.getCollection().pipe(
-           tap(_ => this.isLoading = false),
-           catchError((err) => {
-             console.error({ err });
-             this.isLoading = false;
-             return of([]);
-           })
-         )
-       )*/
+      takeUntil(this.destroySubject)
     );
+  }
+
+  ngOnDestroy(): void {
+    this.destroySubject.next();
   }
 
   deleteBadgeItem(badge: Badge) {

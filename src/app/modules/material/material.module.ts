@@ -14,6 +14,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule } from '@angular/material/snack-bar';
 
 const selectedModules = [
   MatAutocompleteModule,
@@ -30,6 +31,7 @@ const selectedModules = [
   MatNativeDateModule,
   MatProgressSpinnerModule,
   MatSelectModule,
+  MatSnackBarModule,
   MatToolbarModule,
 ];
 
@@ -39,6 +41,9 @@ const selectedModules = [
   ],
   exports: [
     ...selectedModules
+  ],
+  providers: [
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } }
   ]
 })
 export class MaterialModule {

@@ -78,7 +78,8 @@ export class BadgeApiService {
   getCollectionByUserId(userId: DbBadge['userId']) {
     return this.firebaseHelper.collection(this.db.collection<DbBadge>(environment.firebaseApiUrls.badges, ref => ref
       .where('userId', '==', userId)
-      .orderBy('timestamp', 'desc'))
+      .orderBy('timestamp', 'desc')
+      .orderBy('clock', 'desc'))
     ).pipe(
       map((badges) => {
         if(!badges.length) {
