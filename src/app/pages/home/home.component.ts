@@ -11,6 +11,7 @@ import { DateService } from '../../modules/shared/services/date.service';
 import { UserApiService } from '../../api/user-api.service';
 import { AuthUser } from '../../models/auth.models';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AppLoaderService } from '../../modules/shared/services/app-loader.service';
 
 @Component({
   selector: 'ob-home',
@@ -45,6 +46,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private dateService: DateService,
     private confirmDialog: ConfirmDialogService,
+    private appLoaderService: AppLoaderService,
     private snackbar: MatSnackBar
   ) {
   }
@@ -64,9 +66,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.nfcPermissionState = state;
     });
     this.nfcMessages$.pipe(
-      tap(message => console.log({ nfcMessage_PRE: message })),
-      throttleTime(500),
-      tap(message => console.log({ nfcMessage_post: message })),
       takeUntil(this.destroySubject)
     ).subscribe(message => {
       this.doBadge(message.data);
@@ -87,6 +86,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.nfcService.stopRead();
+    this.nfcService.stopWrite();
     this.destroySubject.next();
   }
 
@@ -113,20 +114,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   async addBadgeItem(badge: BadgeForm) {
     try {
-      const res = await this.badgeApiService.create(badge);
+      this.appLoaderService.start();
+      await this.badgeApiService.create(badge);
       console.debug('Created', badge);
       this.snackbar.open(`${ badge.clock?.toUpperCase() }: ${ badge.timestamp ? this.dateService.isoToHumanDate(badge.timestamp) : '' }`, 'Dismiss');
-
-      /*this.confirmDialog.open({
-        html: `<div><label>User ID:</label> ${ badge.userId }</div>
-<div><label>Clock:</label> ${ badge.clock }</div>
-<div><label>Time:</label> ${ badge.timestamp ? this.dateService.isoToHumanDate(badge.timestamp) : '' }</div>`,
-        confirmText: 'Ok',
-        title: 'Badge sent',
-      });*/
     } catch(err) {
       console.error('[Home] error on adding badge item', err);
     }
+    this.appLoaderService.stop();
   }
 
   startNfcScan() {
@@ -138,11 +133,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   startWriteNfc(clock: Badge['clock']) {
-    void this.nfcService.startWrite(clock);
+    this.nfcService.startWrite(clock);
   }
 
   stopWriteNfc() {
-    void this.nfcService.stopWrite();
+    this.nfcService.stopWrite();
+    this.nfcService.startRead();
+
   }
 
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AppCheckUpdateService } from './modules/shared/services/app-check-update.service';
 import { AuthService } from './modules/core/services/auth.service';
+import { AppLoaderService } from './modules/shared/services/app-loader.service';
 
 @Component({
   selector: 'ob-root',
@@ -11,9 +12,11 @@ export class AppComponent implements OnInit {
 
   isAuthorized$ = this.authService.isAuthorized$;
   isAuthenticated$ = this.authService.isAuthenticated$;
+  isAppLoading$ = this.appLoaderService.isLoading$;
 
   constructor(private authService: AuthService,
-              private appCheckUpdateService: AppCheckUpdateService
+              private appCheckUpdateService: AppCheckUpdateService,
+              private appLoaderService: AppLoaderService
   ) {
 
   }

@@ -41,11 +41,11 @@
         <div><strong>Tag administration section</strong></div>
 
         <div>
-          <button mat-flat-button (click)="startWriteNfc('in')">
+          <button mat-flat-button (click)="startWriteNfc('in')" *ngIf="nfcWriteRunningState === 'stopped'">
             <span>Write IN</span>&nbsp;<mat-icon>login</mat-icon>
           </button>
 
-          <button mat-flat-button (click)="startWriteNfc('out')">
+          <button mat-flat-button (click)="startWriteNfc('out')" *ngIf="nfcWriteRunningState === 'stopped'">
             <span>Write OUT</span>&nbsp;<mat-icon>logout</mat-icon>
           </button>
 

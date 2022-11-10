@@ -5,6 +5,7 @@ import {
   tap,
   throttleTime
 } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -13,19 +14,23 @@ export class NfcService {
 
   private ndef: NDEFReader | undefined;
   private abortController = new AbortController();
+
+  private hasNfcCapabilitySubject = new BehaviorSubject<boolean>(false);
+  private permissionStateSubject = new BehaviorSubject<PermissionState>('denied');
+  private readRunningStateSubject = new BehaviorSubject<'started' | 'stopped'>('stopped');
+  private writeRunningStateSubject = new BehaviorSubject<'started' | 'stopped'>('stopped');
   private messagesSubject = new Subject<any>();
 
-  public hasNfcCapability$ = new BehaviorSubject<boolean>(false);
-  public permissionState$ = new BehaviorSubject<PermissionState>('denied');
-  public readRunningState$ = new BehaviorSubject<'started' | 'stopped'>('stopped');
-  public writeRunningState$ = new BehaviorSubject<'started' | 'stopped'>('stopped');
+  public hasNfcCapability$ = this.hasNfcCapabilitySubject.asObservable();
+  public permissionState$ = this.permissionStateSubject.asObservable();
+  public readRunningState$ = this.readRunningStateSubject.asObservable();
+  public writeRunningState$ = this.writeRunningStateSubject.asObservable();
+
   public messages$ = this.messagesSubject.asObservable().pipe(
-    tap(message => console.log({ nfcMessagePRE: message })),
     throttleTime(500),
-    tap(message => console.log({ nfcMessagePOST: message }))
   );
 
-  constructor() {
+  constructor(private snackbar: MatSnackBar) {
   }
 
   async init() {
@@ -33,15 +38,15 @@ export class NfcService {
     if('NDEFReader' in window) {
       console.debug('[NfcService] This browser has NFC capability! <3');
 
-      this.hasNfcCapability$.next(true);
+      this.hasNfcCapabilitySubject.next(true);
 
       const nfcPermissionStatus = await navigator.permissions.query({ name: 'nfc' } as unknown as PermissionDescriptor);
 
-      this.permissionState$.next(nfcPermissionStatus.state);
+      this.permissionStateSubject.next(nfcPermissionStatus.state);
 
       nfcPermissionStatus.onchange = () => {
         console.debug('[NfcService] The user decided to change his settings. New permission: ' + nfcPermissionStatus.state);
-        this.permissionState$.next(nfcPermissionStatus.state);
+        this.permissionStateSubject.next(nfcPermissionStatus.state);
         if(nfcPermissionStatus.state === 'denied') {
           this.stopRead();
         }
@@ -49,7 +54,7 @@ export class NfcService {
 
       if(nfcPermissionStatus.state === 'granted') {
         console.debug('[NfcService] The user has granted the NFC permission');
-        if(this.readRunningState$.value !== 'started') {
+        if(this.readRunningStateSubject.value !== 'started') {
           void this.startRead();
         }
       } else if(nfcPermissionStatus.state === 'prompt') {
@@ -70,7 +75,7 @@ export class NfcService {
     try {
       const res = await this.ndef.scan({ signal: this.abortController.signal });
 
-      this.readRunningState$.next('started');
+      this.readRunningStateSubject.next('started');
 
       console.debug('[NfcService] Scan started successfully.', res);
 
@@ -98,10 +103,10 @@ export class NfcService {
 
   stopRead() {
     this.abortController.abort();
-    this.readRunningState$.next('stopped');
+    this.readRunningStateSubject.next('stopped');
   }
 
-  async startWrite(text?: string) {
+  startWrite(text?: string) {
     if(!text) {
       console.error('[NfcService] cannot write an empty text');
       return;
@@ -109,19 +114,26 @@ export class NfcService {
     this.stopRead();
     this.abortController = new AbortController();
     this.ndef = new NDEFReader();
-
-    try {
-      const res = await this.ndef.write(text, { signal: this.abortController.signal });
-      console.debug(`[NfcService] NDEF message "${ text }" written!`, res);
-      this.writeRunningState$.next('started');
-    } catch(error) {
-      this.writeRunningState$.next('stopped');
-      console.error(`[NfcService] Error on NDEF message  writing!`, error);
-    }
+    this.writeRunningStateSubject.next('started');
+    this.ndef.write(text, { signal: this.abortController.signal })
+      .then(res => {
+        this.writeRunningStateSubject.next('stopped');
+        console.debug(`[NfcService] NDEF message "${ text }" written!`, res);
+        this.snackbar.open(`NDEF message "${ text }" written`, 'Dismiss');
+        setTimeout(() => void this.startRead(), 2000);
+      })
+      .catch(err => {
+        this.writeRunningStateSubject.next('stopped');
+        if(err.toString().startsWith('AbortError')) {
+          console.debug(`[NfcService] Stop writing NDEF message`);
+        } else {
+          console.error(`[NfcService] Error on NDEF message  writing!`, err);
+        }
+      });
   }
 
   stopWrite() {
     this.abortController.abort();
-    this.writeRunningState$.next('stopped');
+    this.writeRunningStateSubject.next('stopped');
   }
 }
