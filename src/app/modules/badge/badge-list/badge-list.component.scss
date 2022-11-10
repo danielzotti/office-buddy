@@ -1,12 +1,5 @@
-@use "../../../scss/colors";
-@use "../../../scss/variables";
-
-.badge-list {
-  .mat-mini-fab {
-    margin-left: variables.$spacing-small;
-    margin-right: variables.$spacing-small;
-  }
-}
+@use "../scss/colors";
+@use "../scss/variables";
 
 .badge-list-item {
   padding: variables.$spacing-default;
@@ -33,5 +26,10 @@
 
   .badge-out {
     color: colors.$red;
+  }
+
+  .mat-mini-fab {
+    margin-left: variables.$spacing-small;
+    margin-right: variables.$spacing-small;
   }
 }

@@ -16,23 +16,24 @@ import { DatePipe } from '@angular/common';
 import { NfcService } from './modules/shared/services/nfc.service';
 import { AppCheckUpdateService } from './modules/shared/services/app-check-update.service';
 import { AppRoutingModule } from './app-routing.module';
-import { HomeComponent } from './pages/home/home.component';
+import { HomePageComponent } from './pages/home/home-page.component';
 import { RouterLinkWithHref, RouterOutlet } from '@angular/router';
-import { BadgeListComponent } from './pages/badge-list/badge-list.component';
-import { UserListComponent } from './pages/user-list/user-list.component';
-import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { LoginComponent } from './pages/login/login.component';
+import { BadgeListPageComponent } from './pages/badge-list/badge-list-page.component';
+import { UserListPageComponent } from './pages/user-list/user-list-page.component';
+import { NotFoundPageComponent } from './pages/not-found/not-found-page.component';
+import { LoginPageComponent } from './pages/login/login-page.component';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { BadgeModule } from './modules/badge/badge.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
-    BadgeListComponent,
-    UserListComponent,
-    NotFoundComponent,
-    LoginComponent
+    HomePageComponent,
+    BadgeListPageComponent,
+    UserListPageComponent,
+    NotFoundPageComponent,
+    LoginPageComponent
   ],
   imports: [
     // ANGULAR
@@ -60,6 +61,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
     AppRoutingModule,
     RouterOutlet,
     RouterLinkWithHref,
+    BadgeModule,
   ],
   providers: [
     AppCheckUpdateService,

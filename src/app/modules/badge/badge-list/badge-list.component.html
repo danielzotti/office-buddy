@@ -1,0 +1,19 @@
+<p class="badge-list-item" *ngIf="!badges.length">No data</p>
+
+<div class="badge-list-item" *ngFor="let badge of badges">
+  <span>
+    <mat-icon *ngIf="badge.clock === 'in'" class="badge-in">login</mat-icon>
+    <mat-icon *ngIf="badge.clock === 'out'" class="badge-out">logout</mat-icon>
+
+    <span *ngIf="badge.timestamp"><strong>{{ badge.timestamp | date:'dd/MM/yyyy HH:mm'}}</strong></span>
+  </span>
+
+  <span>
+    <button mat-icon-button color="warn" (click)="onDeleteBadgeItem(badge)">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" (click)="onUpdateBadgeItem(badge)">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </span>
+</div>

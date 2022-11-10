@@ -1,8 +1,18 @@
+import { DateTime } from 'luxon';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Badge, BadgeForm } from '../../models/badge.models';
 import { NfcService } from '../../modules/shared/services/nfc.service';
 import { BadgeApiService } from '../../api/badge-api.service';
-import { filter, Subject, takeUntil, tap, throttleTime } from 'rxjs';
+import {
+  catchError,
+  filter,
+  Observable,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { DatePipe } from '@angular/common';
 import { AuthService } from '../../modules/core/services/auth.service';
@@ -12,13 +22,15 @@ import { UserApiService } from '../../api/user-api.service';
 import { AuthUser } from '../../models/auth.models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AppLoaderService } from '../../modules/shared/services/app-loader.service';
+import { BadgeEditDialogComponent } from '../../modules/badge/badge-edit-dialog/badge-edit-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'ob-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  selector: 'ob-home-page',
+  templateUrl: './home-page.component.html',
+  styleUrls: ['./home-page.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomePageComponent implements OnInit, OnDestroy {
   // AUTH
   user: AuthUser | undefined;
 
@@ -31,10 +43,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   messages: Array<any> = [];
 
   // BADGES
+  todayBadges$: Observable<Array<Badge>> | undefined;
   newBadge: BadgeForm = {
     clock: 'in',
     timestamp: this.datePipe.transform(new Date(), environment.formatter.badgeIsoDateTime) ?? undefined
   };
+  isTodayLoading = false;
+  todayBadges: Array<Badge> = [];
+
 
   private destroySubject = new Subject<void>();
 
@@ -47,7 +63,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private dateService: DateService,
     private confirmDialog: ConfirmDialogService,
     private appLoaderService: AppLoaderService,
-    private snackbar: MatSnackBar
+    private snackbar: MatSnackBar,
+    private dialog: MatDialog
   ) {
   }
 
@@ -83,6 +100,23 @@ export class HomeComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.destroySubject)
     ).subscribe();
+
+    this.isTodayLoading = true;
+
+    this.todayBadges$ = this.auth.userId$.pipe(
+      // distinctUntilChanged(),
+      filter(uid => !!uid),
+      switchMap((userId) => this.badgeApiService.getTodayByUserId(userId!).pipe(
+          tap(_ => this.isTodayLoading = false),
+          tap(badges => this.todayBadges = badges),
+          catchError((err) => {
+            console.error({ err });
+            return of([]);
+          })
+        )
+      ),
+      takeUntil(this.destroySubject)
+    );
   }
 
   ngOnDestroy(): void {
@@ -113,8 +147,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   async addBadgeItem(badge: BadgeForm) {
+    this.appLoaderService.start();
+
+    if(this.isTodayBadgeAlreadyExisting(badge)) {
+      this.snackbar.open(`Badge already exists!`, 'Dismiss');
+      this.appLoaderService.stop();
+      return;
+    }
+
     try {
-      this.appLoaderService.start();
       await this.badgeApiService.create(badge);
       console.debug('Created', badge);
       this.snackbar.open(`${ badge.clock?.toUpperCase() }: ${ badge.timestamp ? this.dateService.isoToHumanDate(badge.timestamp) : '' }`, 'Dismiss');
@@ -124,6 +165,38 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.appLoaderService.stop();
   }
 
+  deleteBadgeItem(badge: Badge) {
+    const canDelete = confirm(`Are you sure to delete badge
+${ badge.clock?.toUpperCase() }: ${ this.dateService.isoToHumanDate(badge.timestamp) }?`);
+
+    if(canDelete && badge.key) {
+      this.badgeApiService.deleteByKey(badge.key).then(res => console.debug('Deleted', badge));
+    }
+  }
+
+  openUpdateBadgeModal(badge: Badge) {
+    const dialogRef = this.dialog.open(BadgeEditDialogComponent, {
+      width: '350px',
+    });
+
+    dialogRef.componentInstance.badgeForm = {
+      userId: badge.userId,
+      clock: badge.clock,
+      timestamp: this.dateService.isoToHtmlDate(badge?.timestamp)
+    };
+
+    dialogRef.componentInstance.formSubmitted.subscribe(editedBadge => {
+      this.badgeApiService.update(badge.key, {
+        ...editedBadge,
+        timestamp: editedBadge.timestamp
+      }).then(res => console.debug('Updated', editedBadge));
+      dialogRef.close();
+    });
+
+  }
+
+
+  // NFC
   startNfcScan() {
     void this.nfcService.startRead();
   }
@@ -139,7 +212,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   stopWriteNfc() {
     this.nfcService.stopWrite();
     this.nfcService.startRead();
+  }
 
+  private isTodayBadgeAlreadyExisting(badge: BadgeForm) {
+    const todayBadge = this.todayBadges.find(b => {
+      const t1 = DateTime.fromISO(badge.timestamp!).toFormat('yyyy-MM-dd hh:mm');
+      const t2 = DateTime.fromISO(b.timestamp).toFormat('yyyy-MM-dd hh:mm');
+      return t1 === t2 && b.clock === badge.clock;
+    });
+    return !!todayBadge;
   }
 
 }

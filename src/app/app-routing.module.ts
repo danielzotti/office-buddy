@@ -1,32 +1,32 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { BadgeListComponent } from './pages/badge-list/badge-list.component';
-import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { UserListComponent } from './pages/user-list/user-list.component';
+import { HomePageComponent } from './pages/home/home-page.component';
+import { BadgeListPageComponent } from './pages/badge-list/badge-list-page.component';
+import { NotFoundPageComponent } from './pages/not-found/not-found-page.component';
+import { UserListPageComponent } from './pages/user-list/user-list-page.component';
 import { IsAdminGuard } from './modules/core/guards/is-admin-guard.service';
-import { LoginComponent } from './pages/login/login.component';
+import { LoginPageComponent } from './pages/login/login-page.component';
 import { IsAuthorizedGuard } from './modules/core/guards/is-authorized-guard.service';
 
 const routes: Routes = [
   {
     path: 'login',
-    component: LoginComponent,
+    component: LoginPageComponent,
   },
   {
     path: 'home',
-    component: HomeComponent,
+    component: HomePageComponent,
     canActivate: [IsAuthorizedGuard]
   },
   {
     path: 'badges',
-    component: BadgeListComponent,
+    component: BadgeListPageComponent,
     canActivate: [IsAuthorizedGuard]
   },
   {
     path: 'users',
-    component: UserListComponent,
+    component: UserListPageComponent,
     canActivate: [IsAuthorizedGuard, IsAdminGuard]
   },
   {
@@ -36,7 +36,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    component: NotFoundComponent
+    component: NotFoundPageComponent
   },
 ];
 

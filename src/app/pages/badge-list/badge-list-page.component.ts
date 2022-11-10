@@ -12,7 +12,7 @@ import {
 } from 'rxjs';
 import {
   BadgeEditDialogComponent
-} from '../../modules/core/components/badge-edit-dialog/badge-edit-dialog.component';
+} from '../../modules/badge/badge-edit-dialog/badge-edit-dialog.component';
 import { BadgeApiService } from '../../api/badge-api.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DateService } from '../../modules/shared/services/date.service';
@@ -20,11 +20,11 @@ import { AuthService } from '../../modules/core/services/auth.service';
 import { Badge } from '../../models/badge.models';
 
 @Component({
-  selector: 'ob-badge-list',
-  templateUrl: './badge-list.component.html',
-  styleUrls: ['./badge-list.component.scss']
+  selector: 'ob-badge-list-page',
+  templateUrl: './badge-list-page.component.html',
+  styleUrls: ['./badge-list-page.component.scss']
 })
-export class BadgeListComponent implements OnInit {
+export class BadgeListPageComponent implements OnInit {
 
   // UI
   isLoading = true;
@@ -69,7 +69,6 @@ ${ badge.clock?.toUpperCase() }: ${ this.dateService.isoToHumanDate(badge.timest
       this.badgeApiService.deleteByKey(badge.key).then(res => console.debug('Deleted', badge));
     }
   }
-
 
   openUpdateBadgeModal(badge: Badge) {
     const dialogRef = this.dialog.open(BadgeEditDialogComponent, {

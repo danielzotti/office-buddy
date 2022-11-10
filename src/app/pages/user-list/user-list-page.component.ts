@@ -4,11 +4,11 @@ import { DbUserWithKey, User, UserWithKey } from '../../models/user.models';
 import { catchError, Observable, of, tap } from 'rxjs';
 
 @Component({
-  selector: 'ob-user-list',
-  templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.scss']
+  selector: 'ob-user-list-page',
+  templateUrl: './user-list-page.component.html',
+  styleUrls: ['./user-list-page.component.scss']
 })
-export class UserListComponent implements OnInit {
+export class UserListPageComponent implements OnInit {
 
   // UI
   isLoading = true;

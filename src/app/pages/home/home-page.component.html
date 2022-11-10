@@ -72,6 +72,19 @@
     </mat-card-content>
   </mat-card>
 
+  <mat-card class="today-badge">
+    <mat-card-title>Today</mat-card-title>
+    <mat-card-content>
+
+      <ob-spinner *ngIf="isTodayLoading"></ob-spinner>
+
+      <ob-badge-list *ngIf="(todayBadges$ | async) as badges" [badges]="badges"
+                     (deleteBadge)="deleteBadgeItem($event)"
+                     (updateBadge)="openUpdateBadgeModal($event)"
+      ></ob-badge-list>
+    </mat-card-content>
+  </mat-card>
+
   <mat-card *obAdminOnly>
     <mat-card-title>Manual badge</mat-card-title>
     <mat-card-content>

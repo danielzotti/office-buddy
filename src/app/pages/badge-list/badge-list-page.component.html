@@ -1,0 +1,15 @@
+<div class="app-content-inner">
+  <ob-spinner *ngIf="isLoading"></ob-spinner>
+
+  <mat-card *ngIf="(badges$ | async) as badges">
+    <mat-card-title>Badge list</mat-card-title>
+    <mat-card-content>
+      <div class="badge-list">
+        <ob-badge-list [badges]="badges"
+                       (deleteBadge)="deleteBadgeItem($event)"
+                       (updateBadge)="openUpdateBadgeModal($event)"
+        ></ob-badge-list>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

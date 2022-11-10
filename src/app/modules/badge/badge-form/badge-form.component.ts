@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { BadgeForm } from '../../../../models/badge.models';
-import { DateService } from '../../../shared/services/date.service';
+import { BadgeForm } from '../../../models/badge.models';
+import { DateService } from '../../shared/services/date.service';
 
 @Component({
   selector: 'ob-badge-form',

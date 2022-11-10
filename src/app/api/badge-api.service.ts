@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { Injectable } from '@angular/core';
 import {
   Badge,
@@ -81,6 +82,29 @@ export class BadgeApiService {
       .orderBy('timestamp', 'desc')
       .orderBy('clock', 'desc'))
     ).pipe(
+      map((badges) => {
+        if(!badges.length) {
+          return [];
+        }
+        return badges.map(badge => (
+          {
+            ...badge,
+            timestamp: (badge?.timestamp as Timestamp)?.toDate().toISOString(),
+          } as Badge
+        ));
+      })
+    );
+  }
+
+  getTodayByUserId(userId: DbBadge['userId']) {
+    const todayDate = new Date(DateTime.now().toFormat('yyyy-MM-dd'));
+    const tomorrowDate = new Date(DateTime.now().plus({ days: 1 }).toFormat('yyyy-MM-dd'));
+    return this.firebaseHelper.collection(this.db.collection<DbBadge>(environment.firebaseApiUrls.badges, ref => ref
+      .where('userId', '==', userId)
+      .where('timestamp', '>=', todayDate)
+      .where('timestamp', '<', tomorrowDate)
+      .orderBy('timestamp', 'desc')
+    )).pipe(
       map((badges) => {
         if(!badges.length) {
           return [];
